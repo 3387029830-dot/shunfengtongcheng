@@ -72,6 +72,20 @@ if __name__ == "__main__":
     rimg.alpha_composite(mark, (408, 500))
     print("prop rider-sf", save_trim(np.asarray(rimg), "rider-sf"))
 
+    # 专属配送箱（打开）：抠图 + 正面左上贴官方 logo 与字标
+    from PIL import ImageDraw, ImageFont
+    box = Image.fromarray(matte(load("box-open")))
+    mark = Image.open(ROOT / "assets/brand/logo-mark-white.png")
+    mh = 78
+    mark = mark.resize((round(mark.width * mh / mark.height), mh), Image.LANCZOS)
+    box.alpha_composite(mark, (450, 610))
+    d = ImageDraw.Draw(box)
+    bold = ImageFont.truetype("/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc", 60, index=2)
+    light = ImageFont.truetype("/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc", 22, index=2)
+    d.text((450 + mark.width + 16, 606), "顺丰同城", font=bold, fill=(251, 248, 244, 255))
+    d.text((452, 712), "专 业 同 城 急 送", font=light, fill=(185, 177, 168, 255))
+    print("prop box-sf", save_trim(np.asarray(box), "box-sf"))
+
     # 道具：按连通块切出
     rgba = matte(load("props"))
     solid = ndimage.binary_dilation(rgba[..., 3] > 30, iterations=12)

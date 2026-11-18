@@ -16,13 +16,13 @@ const R_DIAL = 440, R_ROAD = 512;
 const S = 0.54; // 姿势图像素 → 海报单位（三张统一，沙发大小一致）
 
 const uri = (n) => 'data:image/png;base64,' + fs.readFileSync(path.join(CUT, n + '.png')).toString('base64');
-const IMG = Object.fromEntries(['pose1-1445', 'pose2-1450', 'pose3-1500', 'cake', 'box', 'rider-sf', 'bakery', 'home'].map((n) => [n, uri(n)]));
+const IMG = Object.fromEntries(['pose1-1445', 'pose2-1450', 'pose3-1500', 'cake', 'box', 'rider-sf', 'box-sf', 'bakery', 'home'].map((n) => [n, uri(n)]));
 const BRAND = path.join(ROOT, 'assets/brand');
 const buri = (n) => 'data:image/png;base64,' + fs.readFileSync(path.join(BRAND, n + '.png')).toString('base64');
 const LOGO = buri('logo-mark'), LOGO_W = buri('logo-mark-white'), LOGO_R = 249 / 272;
 const logo = (x, y, h, white) => `<image href="${white ? LOGO_W : LOGO}" x="${x}" y="${y}" width="${h * LOGO_R}" height="${h}"/>`;
 const pngSize = (n) => { const b = fs.readFileSync(path.join(CUT, n + '.png')); return [b.readUInt32BE(16), b.readUInt32BE(20)]; };
-const SIZE = Object.fromEntries(['cake', 'rider-sf', 'bakery', 'home'].map((n) => [n, pngSize(n)]));
+const SIZE = Object.fromEntries(['cake', 'rider-sf', 'box-sf', 'bakery', 'home'].map((n) => [n, pngSize(n)]));
 
 const pt = (deg, r) => [CX + r * Math.sin((deg * Math.PI) / 180), CY - r * Math.cos((deg * Math.PI) / 180)];
 const arc = (a0, a1, r) => {
@@ -107,14 +107,13 @@ function frame(p) {
     logo(80, 78, 46),
     T(80 + 46 * LOGO_R + 12, 116, '顺丰同城', { size: 34, w: 700, ls: 3, fill: C.black }),
     T(1120, 124, p.time, { size: 64, w: 200, ls: 3, anchor: 'end' }),
-    T(76, 1452, '同城，即同时。', { serif: true, size: 76, w: 700, ls: 6 }),
-    T(80, 1512, '一念起，一刻至 —— 顺丰同城', { size: 26, fill: C.soft, ls: 6 }),
+    T(76, 1480, p.line, { serif: true, size: 76, w: 700, ls: 6 }),
   ].join('');
 }
 
 const posters = [
   {
-    file: 'poster-1-1445', idx: '01', time: '14:45', tag: '馋 了',
+    file: 'poster-1-1445', line: '一念起，', idx: '01', time: '14:45', tag: '馋 了',
     body: () =>
       pose('pose1-1445', [790, 575]) + pin + road(255, 0) +
       // 想象泡泡
@@ -122,7 +121,7 @@ const posters = [
       `<circle cx="520" cy="${CY - 280}" r="62" fill="${C.paper}"/></g>` + prop('cake', 520, CY - 278, 84),
   },
   {
-    file: 'poster-2-1450', idx: '02', time: '14:50', tag: '下 单',
+    file: 'poster-2-1450', line: '一刻至。', idx: '02', time: '14:50', tag: '下 单',
     body: () =>
       pose('pose2-1450', [785, 640]) + pin + road(300, 300) +
       `<g transform="translate(500 ${CY - 300})"><path d="M18 0 H282 a18 18 0 0 1 18 18 V66 a18 18 0 0 1 -18 18 H70 L-22 128 L40 84 H18 a18 18 0 0 1 -18 -18 V18 a18 18 0 0 1 18 -18 Z" fill="${C.paper}" filter="url(#lift)"/>` +
@@ -131,10 +130,11 @@ const posters = [
       T(80, 64, '骑手已取货，正在赶来', { size: 17, w: 400 }) + `</g>`,
   },
   {
-    file: 'poster-3-1500', idx: '03', time: '15:00', tag: '到 嘴',
+    file: 'poster-3-1500', line: '同城，即同时。', idx: '03', time: '15:00', tag: '到 嘴',
     body: () =>
       pose('pose3-1500', [680, 795]) + pin + road(19, 19, 128) +
-      sfBox(318, CY + 110, 108) +
+      `<ellipse cx="322" cy="${CY + 112}" rx="86" ry="9" fill="${C.ink}" opacity=".16"/>` +
+      prop('box-sf', 318, CY + 112 - 140 * SIZE['box-sf'][1] / SIZE['box-sf'][0] / 2, 140) +
       T(842, CY - 548, '叮咚 ~', { size: 26, w: 400, ls: 4, fill: C.red }),
   },
 ];
@@ -142,7 +142,7 @@ const posters = [
 function svg(p) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">` +
     `${defs()}<rect width="${W}" height="${H}" fill="${C.bg}"/>${dial()}${p.body()}${frame(p)}` +
-    `<rect width="${W}" height="${H}" filter="url(#grain)" opacity=".5" style="mix-blend-mode:multiply"/></svg>`;
+    `<rect width="${W}" height="${H}" filter="url(#grain)" opacity=".3" style="mix-blend-mode:multiply"/></svg>`;
 }
 
 (async () => {
