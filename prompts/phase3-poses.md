@@ -118,3 +118,20 @@ With one hand she holds the whole strawberry cream cake on its board right in fr
 
 Expression: head slightly lowered, eyes looking down at the cake, cheeks full from the big mouthful, a little whipped cream on her lips. Natural, cute and appetizing — not exaggerated, not distorted.
 ```
+
+## 画3 v4 —— 修正对参考图神态的理解
+
+v2、v3 把参考图误读为"狼吞虎咽、滑稽"，越改越夸张。团队要的是参考图**原本的神态**：
+**淡定、安静、垂眼专注地看着蛋糕，脸放松，嘴边一小块奶油**——反差在于平静的脸 vs 直接捧着整个蛋糕吃。
+v3 的"举拳"也一并取消。代价：画3 分针只到头顶丸子，比画1/2 短；合成时让腿明显短于上身以保住指针对比。
+
+```
+Let's redo the last image with a calmer pose — discard the previous version.
+
+Same character, same style, same sofa (front view, horizontal, centered), landscape 3:2, plain off-white #F5F1EA background, no text.
+
+She sits upright on the sofa in side profile facing right, torso vertical, hips at the center of the sofa, legs extended to the right along the seat with knees slightly bent.
+With both hands she holds the whole strawberry cream cake on its board at chin height, close in front of her face, as if she is eating straight from it.
+
+Expression: calm, quiet and composed — head slightly bowed, eyelids lowered, eyes looking down at the cake, relaxed face, lips gently closed with a small smear of whipped cream on them. Subtle and understated, almost deadpan. No big smile, no puffed cheeks, nothing exaggerated.
+```
