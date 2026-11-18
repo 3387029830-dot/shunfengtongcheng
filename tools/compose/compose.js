@@ -45,6 +45,7 @@ function defs() {
     </radialGradient>
     <filter id="lift" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000" flood-opacity=".18"/></filter>
     <filter id="glow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="24" stdDeviation="40" flood-color="#000" flood-opacity=".55"/></filter>
+    <radialGradient id="homeGlow"><stop offset="0" stop-color="#E7C27D" stop-opacity=".28"/><stop offset="1" stop-color="#E7C27D" stop-opacity="0"/></radialGradient>
     <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="7"/><feColorMatrix values="0 0 0 0 .35  0 0 0 0 .29  0 0 0 0 .24  0 0 0 1.4 -.55"/></filter>
   </defs>`;
 }
@@ -67,32 +68,59 @@ function dial() {
   return s.join('');
 }
 
-// 夜晚的城市：正立天际线在表盘后方，表盘像一轮月亮悬在城市上空
-function city() {
+// 表盘外的城市：环形天际线（深灰楼群环绕表盘，零星暖光窗户；9 点蛋糕店、12 点她家）
+function city(arrived) {
   let seed = 11;
   const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-  const base = 1336, s = [];
-  const tones = ['#211E1C', '#262220', '#2B2724'];
-  const layer = (minH, maxH, edgeBoost, tone, litP) => {
-    let x = -10;
-    while (x < W + 10) {
-      const w = 38 + rnd() * 54;
-      const cxn = Math.abs(x + w / 2 - CX) / CX; // 0 中间 → 1 边缘
-      const h = minH + rnd() * (maxH - minH) + edgeBoost * Math.pow(cxn, 3);
-      const y = base - h;
-      s.push(`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${(w - 3).toFixed(1)}" height="${h.toFixed(1)}" fill="${tone ?? tones[Math.floor(rnd() * 3)]}"/>`);
-      if (rnd() < 0.35) s.push(`<rect x="${(x + w * 0.3).toFixed(1)}" y="${(y - 14).toFixed(1)}" width="${(w * 0.3).toFixed(1)}" height="14" fill="${tone ?? tones[0]}"/>`);
-      for (let wy = y + 14; wy < base - 12; wy += 18)
-        for (let wx = x + 9; wx < x + w - 12; wx += 14)
-          if (rnd() < litP) s.push(`<rect x="${wx.toFixed(1)}" y="${wy.toFixed(1)}" width="4" height="6" fill="#E7C27D" opacity="${(0.45 + rnd() * 0.45).toFixed(2)}"/>`);
-      x += w;
+  const r0 = R_FACE + 30;
+  const maxH = (deg) => {
+    for (let h = 92; h > 10; h -= 2) {
+      const [x, y] = pt(deg, r0 + h);
+      if (x > 24 && x < W - 24 && y > 150 && y < 1356) return h;
     }
+    return 10;
   };
-  layer(120, 260, 420, '#1F1C1A', 0.06); // 远景
-  layer(40, 150, 300, null, 0.12);       // 近景
-  s.push(`<rect x="0" y="${base}" width="${W}" height="2" fill="#3A3532"/>`);
-  // 夜空：几颗很淡的星
-  for (let i = 0; i < 26; i++) s.push(`<circle cx="${(rnd() * W).toFixed(1)}" cy="${(150 + rnd() * 160).toFixed(1)}" r="${(0.8 + rnd() * 1.2).toFixed(1)}" fill="#F3EDE6" opacity="${(0.15 + rnd() * 0.35).toFixed(2)}"/>`);
+  const quad = (a0, a1, ra, rb, fill, extra = '') => {
+    const p = [pt(a0, ra), pt(a1, ra), pt(a1, rb), pt(a0, rb)].map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' ');
+    return `<polygon points="${p}" fill="${fill}" ${extra}/>`;
+  };
+  const windows = (a0, a1, h, litP) => {
+    const s = [];
+    for (let r = r0 + 9; r < r0 + h - 6; r += 11)
+      for (const f of [0.28, 0.72]) {
+        const a = a0 + (a1 - a0) * f;
+        const [x, y] = pt(a, r);
+        const lit = rnd() < litP;
+        s.push(`<rect x="${(x - 1.8).toFixed(1)}" y="${(y - 1.8).toFixed(1)}" width="3.6" height="3.6" fill="${lit ? '#E7C27D' : '#353029'}" opacity="${lit ? 0.85 : 1}"/>`);
+      }
+    return s.join('');
+  };
+  const s = [];
+  // 12 点她家的暖光晕（送达时更亮）
+  const [gx, gy] = pt(0, r0 + 40);
+  s.push(`<circle cx="${gx}" cy="${gy}" r="120" fill="url(#homeGlow)" opacity="${arrived ? 1 : 0.45}"/>`);
+  const tones = ['#24211F', '#292522', '#2E2926'];
+  let a = 0;
+  while (a < 360) {
+    const w = 2.6 + rnd() * 3.4;
+    const mid = a + w / 2;
+    const nearShop = Math.abs(mid - 270) < 8, nearHome = mid < 6 || mid > 354;
+    if (!nearShop && !nearHome) {
+      const h = Math.min(maxH(mid), 24 + rnd() * 68);
+      s.push(quad(a + 0.3, a + w - 0.3, r0, r0 + h, tones[Math.floor(rnd() * 3)]));
+      s.push(windows(a + 0.3, a + w - 0.3, h, 0.16));
+    }
+    a += w;
+  }
+  // 9 点：蛋糕店（加宽的红白遮阳篷 + 亮着的橱窗）
+  const hs = Math.min(maxH(270), 56);
+  s.push(quad(263, 277, r0, r0 + hs, '#2E2926'));
+  for (let i = 0; i < 7; i++) s.push(quad(263 + i * 2, 265 + i * 2, r0 + hs * 0.5, r0 + hs * 0.72, i % 2 ? C.cream : C.red));
+  s.push(quad(265, 275, r0 + 6, r0 + hs * 0.42, '#E7C27D', 'opacity=".55"'));
+  // 12 点：她家（送达时整栋亮灯）
+  const hh = 84;
+  s.push(quad(355.5, 364.5, r0, r0 + hh, '#302B28'));
+  s.push(windows(355.5, 364.5, hh, arrived ? 1 : 0.35));
   return s.join('');
 }
 
@@ -150,14 +178,14 @@ const posters = [
   {
     file: 'poster-1-1445', line: '一念起', en: 'A CRAVING BEGINS', time: '14:45',
     body: () =>
-      subdial(0) + rider(234, 0) + pose('pose1-1445', [790, 575]) + pin +
+      subdial(0) + rider(234, 0) + pose('pose1-1445', [790, 575]) +
       `<g filter="url(#lift)"><circle cx="392" cy="${CY - 150}" r="7" fill="${C.paper}"/><circle cx="412" cy="${CY - 182}" r="11" fill="${C.paper}"/>` +
       `<circle cx="456" cy="${CY - 252}" r="60" fill="${C.paper}"/></g>` + prop('cake', 456, CY - 250, 80),
   },
   {
     file: 'poster-2-1450', line: '一刻至', en: 'ARRIVING IN A MOMENT', time: '14:50',
     body: () =>
-      subdial(5) + rider(300, 300) + pose('pose2-1450', [785, 640]) + pin +
+      subdial(5) + rider(300, 300) + pose('pose2-1450', [785, 640]) +
       `<g transform="translate(470 ${CY - 330})"><path d="M18 0 H282 a18 18 0 0 1 18 18 V66 a18 18 0 0 1 -18 18 H70 L-12 128 L40 84 H18 a18 18 0 0 1 -18 -18 V18 a18 18 0 0 1 18 -18 Z" fill="${C.paper}" filter="url(#lift)"/>` +
       `<rect x="14" y="16" width="52" height="52" rx="12" fill="${C.face}"/>` + logo(40 - 13 * LOGO_R, 29, 26) +
       T(80, 38, '顺丰同城', { size: 18, w: 700, fill: C.ink }) + T(286, 38, '刚刚', { size: 14, fill: C.soft, anchor: 'end' }) +
@@ -166,7 +194,7 @@ const posters = [
   {
     file: 'poster-3-1500', arrived: true, line: '同城，即同时', en: 'SAME CITY, SAME MOMENT', time: '15:00',
     body: () =>
-      subdial(15) + rider(0, 359.9) + pose('pose3-1500', [680, 795]) + pin +
+      subdial(15) + rider(0, 359.9) + pose('pose3-1500', [680, 795]) +
       `<ellipse cx="392" cy="${CY + 236}" rx="96" ry="10" fill="${C.ink}" opacity=".16"/>` +
       prop('box-sf', 388, CY + 236 - 156 * SIZE['box-sf'][1] / SIZE['box-sf'][0] / 2, 156) +
       T(664, CY - 420, '叮咚 ~', { size: 26, w: 400, ls: 4, fill: C.red }),
@@ -175,7 +203,7 @@ const posters = [
 
 function svg(p) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${defs()}` +
-    `<rect width="${W}" height="${H}" fill="${C.bg}"/>${city()}${dial()}${p.body()}${frame(p)}` +
+    `<rect width="${W}" height="${H}" fill="${C.bg}"/>${city(p.arrived)}${dial()}${p.body()}${frame(p)}` +
     `<rect width="${W}" height="${H}" filter="url(#grain)" opacity=".22" style="mix-blend-mode:multiply"/></svg>`;
 }
 
