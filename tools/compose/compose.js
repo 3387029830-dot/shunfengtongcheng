@@ -50,7 +50,7 @@ function defs() {
   </defs>`;
 }
 
-function dial() {
+function dial(skip) {
   const s = [];
   // 细外圈（表圈）
   s.push(`<circle cx="${CX}" cy="${CY}" r="${R_FACE + 18}" fill="none" stroke="#3A3532" stroke-width="1.5"/>`);
@@ -60,6 +60,8 @@ function dial() {
   s.push(`<circle cx="${CX}" cy="${CY}" r="${R_TRACK}" fill="none" stroke="#CDBFAE" stroke-width="1.5" stroke-dasharray="2 8" stroke-linecap="round"/>`);
   // 刻度
   for (let i = 0; i < 60; i++) {
+    const d = Math.abs(((i * 6 - skip + 540) % 360) - 180);
+    if (skip !== undefined && d < 9) continue; // 骑手所在处不画刻度
     const major = i % 5 === 0, quarter = i % 15 === 0;
     const r1 = 426, r0 = r1 - (quarter ? 30 : major ? 18 : 7);
     const [x0, y0] = pt(i * 6, r0), [x1, y1] = pt(i * 6, r1);
@@ -162,32 +164,31 @@ function rider(deg, progress, w = 82) {
   return s.join('');
 }
 
-// 文字系统：中文宋体标题 + 英文 Garamond 斜体（同为衬线，平起平坐），细线分隔画面与文字
+// 文字系统 v3：居中对称，与圆形表盘同一条中轴
+// 顶部：时间图注 / 底部：中文标题 → 英文斜体 → 品牌签名
 function frame(p) {
-  const ML = 80, MR = W - 80;
+  const lockH = 30, word = 24 * 4 + 6 * 3, lockW = lockH * LOGO_R + 12 + word;
   return [
-    logo(ML, 76, 44, true),
-    T(ML + 44 * LOGO_R + 12, 112, '顺丰同城', { size: 32, w: 700, ls: 3 }),
-    `<rect x="${ML}" y="1384" width="${MR - ML}" height="1" fill="${C.cream}" opacity=".18"/>`,
-    `<rect x="${ML}" y="1383" width="56" height="3" fill="${C.red}"/>`,
-    T(ML - 4, 1480, p.line, { serif: true, size: 80, w: 600, ls: 10 }),
-    T(ML, 1536, p.en, { font: 'EB Garamond', italic: true, size: 38, w: 400, op: 0.72, ls: 0.5 }),
-    T(MR, 1480, p.time, { font: 'EB Garamond', size: 56, w: 400, anchor: 'end', ls: 2 }),
-    `<circle cx="${MR - 82}" cy="1525" r="5" fill="${C.red}"/>`,
-    T(MR, 1536, 'p.m.', { font: 'EB Garamond', italic: true, size: 34, w: 400, op: 0.72, anchor: 'end' }),
+    T(CX, 96, p.time, { font: 'EB Garamond', size: 40, w: 400, anchor: 'middle', ls: 6 }),
+    `<circle cx="${CX}" cy="120" r="3.5" fill="${C.red}"/>`,
+    T(CX + 6, 1420, p.line, { serif: true, size: 66, w: 500, ls: 26, anchor: 'middle' }),
+    T(CX, 1472, p.en, { font: 'EB Garamond', italic: true, size: 32, w: 400, op: 0.7, anchor: 'middle', ls: 0.5 }),
+    `<rect x="${CX - 18}" y="1506" width="36" height="1.5" fill="${C.red}"/>`,
+    logo(CX - lockW / 2, 1528, lockH, true),
+    T(CX - lockW / 2 + lockH * LOGO_R + 12, 1553, '顺丰同城', { size: 24, w: 700, ls: 6 }),
   ].join('');
 }
 
 const posters = [
   {
-    file: 'poster-1-1445', line: '一念起', en: 'A craving begins —', time: '14:45',
+    file: 'poster-1-1445', rd: 234, line: '一念起', en: 'A craving begins —', time: '14 : 45',
     body: () =>
       subdial(0) + rider(234, 0) + pose('pose1-1445', [790, 575]) +
       `<g filter="url(#lift)"><circle cx="392" cy="${CY - 150}" r="7" fill="${C.paper}"/><circle cx="412" cy="${CY - 182}" r="11" fill="${C.paper}"/>` +
       `<circle cx="456" cy="${CY - 252}" r="60" fill="${C.paper}"/></g>` + prop('cake', 456, CY - 250, 80),
   },
   {
-    file: 'poster-2-1450', line: '一刻至', en: 'and arrives in a moment.', time: '14:50',
+    file: 'poster-2-1450', rd: 300, line: '一刻至', en: 'and arrives in a moment.', time: '14 : 50',
     body: () =>
       subdial(5) + rider(300, 300) + pose('pose2-1450', [785, 640]) +
       `<g transform="translate(470 ${CY - 330})"><path d="M18 0 H282 a18 18 0 0 1 18 18 V66 a18 18 0 0 1 -18 18 H70 L-12 128 L40 84 H18 a18 18 0 0 1 -18 -18 V18 a18 18 0 0 1 18 -18 Z" fill="${C.paper}" filter="url(#lift)"/>` +
@@ -196,18 +197,17 @@ const posters = [
       T(80, 64, '骑手已取货，正在赶来', { size: 17, w: 400, fill: C.ink }) + `</g>`,
   },
   {
-    file: 'poster-3-1500', arrived: true, line: '同城，即同时', en: 'Same city, same moment.', time: '15:00',
+    file: 'poster-3-1500', rd: 0, arrived: true, line: '同城，即同时', en: 'Same city, same moment.', time: '15 : 00',
     body: () =>
       subdial(15) + rider(0, 359.9) + pose('pose3-1500', [680, 795]) +
       `<ellipse cx="392" cy="${CY + 236}" rx="96" ry="10" fill="${C.ink}" opacity=".16"/>` +
-      prop('box-sf', 388, CY + 236 - 156 * SIZE['box-sf'][1] / SIZE['box-sf'][0] / 2, 156) +
-      T(664, CY - 420, '叮咚 ~', { size: 26, w: 400, ls: 4, fill: C.red }),
+      prop('box-sf', 388, CY + 236 - 156 * SIZE['box-sf'][1] / SIZE['box-sf'][0] / 2, 156),
   },
 ];
 
 function svg(p) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${defs()}` +
-    `<rect width="${W}" height="${H}" fill="${C.bg}"/>${city(p.arrived)}${dial()}${p.body()}${frame(p)}` +
+    `<rect width="${W}" height="${H}" fill="${C.bg}"/>${city(p.arrived)}${dial(p.rd)}${p.body()}${frame(p)}` +
     `<rect width="${W}" height="${H}" filter="url(#grain)" opacity=".22" style="mix-blend-mode:multiply"/></svg>`;
 }
 
