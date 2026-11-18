@@ -63,6 +63,15 @@ if __name__ == "__main__":
         Image.fromarray(matte(load(name))).save(OUT / f"{name}.png")
         print("pose", name)
 
+    # 品牌骑手：抠图 + 在配送箱正面贴反白 logo
+    rider = matte(load("rider-sf"))
+    mark = Image.open(ROOT / "assets/brand/logo-mark-white.png")
+    mh = 86
+    mark = mark.resize((round(mark.width * mh / mark.height), mh), Image.LANCZOS)
+    rimg = Image.fromarray(rider)
+    rimg.alpha_composite(mark, (408, 500))
+    print("prop rider-sf", save_trim(np.asarray(rimg), "rider-sf"))
+
     # 道具：按连通块切出
     rgba = matte(load("props"))
     solid = ndimage.binary_dilation(rgba[..., 3] > 30, iterations=12)

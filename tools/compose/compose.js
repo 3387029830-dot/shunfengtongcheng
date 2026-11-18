@@ -15,12 +15,13 @@ const R_DIAL = 430, R_ROAD = 505;
 const S = 0.54; // 姿势图像素 → 海报单位（三张统一，沙发大小一致）
 
 const uri = (n) => 'data:image/png;base64,' + fs.readFileSync(path.join(CUT, n + '.png')).toString('base64');
-const IMG = Object.fromEntries(['pose1-1445', 'pose2-1450', 'pose3-1500', 'cake', 'box', 'rider', 'bakery', 'home'].map((n) => [n, uri(n)]));
+const IMG = Object.fromEntries(['pose1-1445', 'pose2-1450', 'pose3-1500', 'cake', 'box', 'rider-sf', 'bakery', 'home'].map((n) => [n, uri(n)]));
 const BRAND = path.join(ROOT, 'assets/brand');
 const buri = (n) => 'data:image/png;base64,' + fs.readFileSync(path.join(BRAND, n + '.png')).toString('base64');
 const LOGO = buri('logo-mark'), LOGO_W = buri('logo-mark-white'), LOGO_R = 249 / 272;
 const logo = (x, y, h, white) => `<image href="${white ? LOGO_W : LOGO}" x="${x}" y="${y}" width="${h * LOGO_R}" height="${h}"/>`;
-const SIZE = { cake: [360, 339], box: [463, 338], rider: [388, 425], bakery: [508, 419], home: [467, 421] };
+const pngSize = (n) => { const b = fs.readFileSync(path.join(CUT, n + '.png')); return [b.readUInt32BE(16), b.readUInt32BE(20)]; };
+const SIZE = Object.fromEntries(['cake', 'rider-sf', 'bakery', 'home'].map((n) => [n, pngSize(n)]));
 
 const pt = (deg, r) => [CX + r * Math.sin((deg * Math.PI) / 180), CY - r * Math.cos((deg * Math.PI) / 180)];
 const arc = (a0, a1, r) => {
@@ -75,14 +76,14 @@ function sfBox(cx, by, w) {
     `</g>`;
 }
 
-function road(riderDeg, progress) {
+function road(riderDeg, progress, riderW = 104) {
   const s = [];
   if (progress) s.push(`<path d="${arc(270, progress, R_ROAD)}" fill="none" stroke="${C.red}" stroke-width="4" stroke-linecap="round"/>`);
   const [bx, by] = pt(270, R_ROAD), [hx, hy] = pt(0, R_ROAD);
   s.push(`<circle cx="${bx}" cy="${by}" r="58" fill="${C.bg}"/>` + prop('bakery', bx, by, 96));
   s.push(`<circle cx="${hx}" cy="${hy}" r="58" fill="${C.bg}"/>` + prop('home', hx, hy, 88));
   const [rx, ry] = pt(riderDeg, R_ROAD);
-  s.push(`<circle cx="${rx}" cy="${ry}" r="42" fill="${C.bg}"/>` + prop('rider', rx, ry, 72));
+  s.push(`<circle cx="${rx}" cy="${ry}" r="${riderW * 0.52}" fill="${C.bg}"/>` + prop('rider-sf', rx, ry, riderW));
   return s.join('');
 }
 
@@ -123,9 +124,9 @@ const posters = [
   {
     file: 'poster-3-1500', idx: '03', time: '15:00', tag: '到 嘴',
     body: () =>
-      pose('pose3-1500', [680, 795]) + pin + road(14, 14) +
+      pose('pose3-1500', [680, 795]) + pin + road(19, 19, 128) +
       sfBox(318, 930, 112) +
-      T(776, 318, '叮咚 ~', { size: 26, w: 400, ls: 4, fill: C.red }),
+      T(812, 290, '叮咚 ~', { size: 26, w: 400, ls: 4, fill: C.red }),
     foot:
       T(76, 1478, '同城，即同时。', { serif: true, size: 76, w: 700, ls: 6 }) +
       T(80, 1530, '一念起，一刻至', { size: 24, fill: C.soft, ls: 8 }),
