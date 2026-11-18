@@ -76,6 +76,10 @@ Plain solid off-white #F5F1EA background, only a faint contact shadow under the 
 **方案：蛋糕仍举过头顶，但蛋糕正面已经少了一大口，她脸上沾着奶油。**
 观众一眼读出"她刚刚已经啃了一口"——馋的劲儿回来了，分针也保住了。
 
+### 画3 表情：采用团队参考图的神态
+
+团队偏好参考图（剧照）的表情：低眼专注盯着蛋糕、腮帮塞满、嘴边一圈奶油——狼吞虎咽、旁若无人的馋，比"闭眼陶醉"更有记忆点。只借神态，不模仿演员样貌。
+
 ### 画3 返工提示词
 
 ```
@@ -85,7 +89,7 @@ Changes:
 1) Her hips are exactly at the horizontal center of the sofa.
 2) Her torso is perfectly vertical — not leaning back. Both arms go straight up directly above her shoulders, so the cake is directly above her hips. Head, torso, arms and cake form one vertical line.
 3) The whole strawberry cream cake now has ONE BIG BITE missing from its front edge — a clear, round bite mark showing the sponge layers inside. She has obviously just bitten straight into the whole cake.
-4) Whipped cream smeared on her lips, nose tip and one cheek. Eyes closed, cheeks slightly full as if still chewing, a blissful, satisfied smile.
+4) Expression and attitude (most important): her head tilts back and her eyes are half-lowered, gaze locked intently on the cake above her — focused, greedy, completely absorbed, a little comical. Her cheeks are puffed out and stuffed with a big mouthful, lips pressed closed around it, a messy ring of whipped cream around her mouth and a dab on her nose tip. Unpretentious and real, not a posed pretty smile, eyes NOT closed.
 5) Legs still extend to the RIGHT along the seat cushion, knees slightly bent, slippers near the right armrest.
 
 Plain solid off-white #F5F1EA background, faint contact shadow under the sofa only. No text. Landscape 3:2.
