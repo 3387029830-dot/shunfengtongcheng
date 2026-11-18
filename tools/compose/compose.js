@@ -67,6 +67,56 @@ function dial() {
   return s.join('');
 }
 
+// 夜晚的城市：正立天际线在表盘后方，表盘像一轮月亮悬在城市上空
+function city() {
+  let seed = 11;
+  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const base = 1336, s = [];
+  const tones = ['#211E1C', '#262220', '#2B2724'];
+  const layer = (minH, maxH, edgeBoost, tone, litP) => {
+    let x = -10;
+    while (x < W + 10) {
+      const w = 38 + rnd() * 54;
+      const cxn = Math.abs(x + w / 2 - CX) / CX; // 0 中间 → 1 边缘
+      const h = minH + rnd() * (maxH - minH) + edgeBoost * Math.pow(cxn, 3);
+      const y = base - h;
+      s.push(`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${(w - 3).toFixed(1)}" height="${h.toFixed(1)}" fill="${tone ?? tones[Math.floor(rnd() * 3)]}"/>`);
+      if (rnd() < 0.35) s.push(`<rect x="${(x + w * 0.3).toFixed(1)}" y="${(y - 14).toFixed(1)}" width="${(w * 0.3).toFixed(1)}" height="14" fill="${tone ?? tones[0]}"/>`);
+      for (let wy = y + 14; wy < base - 12; wy += 18)
+        for (let wx = x + 9; wx < x + w - 12; wx += 14)
+          if (rnd() < litP) s.push(`<rect x="${wx.toFixed(1)}" y="${wy.toFixed(1)}" width="4" height="6" fill="#E7C27D" opacity="${(0.45 + rnd() * 0.45).toFixed(2)}"/>`);
+      x += w;
+    }
+  };
+  layer(120, 260, 420, '#1F1C1A', 0.06); // 远景
+  layer(40, 150, 300, null, 0.12);       // 近景
+  s.push(`<rect x="0" y="${base}" width="${W}" height="2" fill="#3A3532"/>`);
+  // 夜空：几颗很淡的星
+  for (let i = 0; i < 26; i++) s.push(`<circle cx="${(rnd() * W).toFixed(1)}" cy="${(150 + rnd() * 160).toFixed(1)}" r="${(0.8 + rnd() * 1.2).toFixed(1)}" fill="#F3EDE6" opacity="${(0.15 + rnd() * 0.35).toFixed(2)}"/>`);
+  return s.join('');
+}
+
+// 副表盘：送达计时（0–15 分钟）
+function subdial(min) {
+  const x = CX, y = CY + 276, r = 70, s = [];
+  s.push(`<circle cx="${x}" cy="${y}" r="${r}" fill="#EAE1D5"/><circle cx="${x}" cy="${y}" r="${r - 7}" fill="none" stroke="${C.tick}" stroke-width="1" opacity=".3"/>`);
+  for (let i = 0; i < 15; i++) {
+    const a = (i * 24 * Math.PI) / 180, major = i % 5 === 0;
+    const r1 = r - 9, r0 = r1 - (i === 0 ? 16 : major ? 10 : 5);
+    s.push(`<line x1="${x + r0 * Math.sin(a)}" y1="${y - r0 * Math.cos(a)}" x2="${x + r1 * Math.sin(a)}" y2="${y - r1 * Math.cos(a)}" stroke="${C.tick}" stroke-width="${major ? 2.2 : 1}" stroke-linecap="round" opacity="${major ? 0.9 : 0.5}"/>`);
+  }
+  [['5', 120], ['10', 240]].forEach(([t, d]) => {
+    const a = (d * Math.PI) / 180, rr = r - 32;
+    s.push(T(x + rr * Math.sin(a), y - rr * Math.cos(a) + 5, t, { size: 13, w: 400, fill: C.tick, anchor: 'middle' }));
+  });
+  s.push(T(x, y + 46, 'MIN', { size: 9, w: 400, fill: C.soft, anchor: 'middle', ls: 3 }));
+  const a = (min * 24 * Math.PI) / 180;
+  s.push(`<line x1="${x - 10 * Math.sin(a)}" y1="${y + 10 * Math.cos(a)}" x2="${x + (r - 14) * Math.sin(a)}" y2="${y - (r - 14) * Math.cos(a)}" stroke="${C.red}" stroke-width="2.6" stroke-linecap="round"/>`);
+  s.push(`<circle cx="${x}" cy="${y}" r="4.5" fill="${C.ink}"/>`);
+  s.push(T(x, y + r + 22, '送 达 计 时', { size: 11, w: 400, fill: C.soft, anchor: 'middle', ls: 2 }));
+  return s.join('');
+}
+
 const pose = (name, [hx, hy]) =>
   `<image href="${IMG[name]}" x="${CX - hx * S}" y="${CY - hy * S}" width="${1536 * S}" height="${1024 * S}"/>`;
 
@@ -88,32 +138,35 @@ function frame(p) {
   return [
     logo(80, 76, 44, true),
     T(80 + 44 * LOGO_R + 12, 112, '顺丰同城', { size: 32, w: 700, ls: 3 }),
-    T(76, 1452, p.line, { serif: true, size: 92, w: 700, ls: 8 }),
-    T(1120, 1452, p.time, { size: 40, w: 200, ls: 4, anchor: 'end', fill: C.soft }),
+    T(78, 1462, p.line, { serif: true, size: 84, w: 600, ls: 14 }),
+    `<rect x="82" y="1492" width="40" height="1.5" fill="${C.red}"/>`,
+    T(136, 1500, p.en, { size: 15, w: 300, ls: 4, fill: C.soft }),
+    `<circle cx="${1120 - 112}" cy="${1494}" r="4" fill="${C.red}"/>`,
+    T(1120, 1500, p.time, { size: 22, w: 300, ls: 4, anchor: 'end', fill: C.cream }),
   ].join('');
 }
 
 const posters = [
   {
-    file: 'poster-1-1445', line: '一念起，', time: '14:45',
+    file: 'poster-1-1445', line: '一念起', en: 'A CRAVING BEGINS', time: '14:45',
     body: () =>
-      rider(234, 0) + pose('pose1-1445', [790, 575]) + pin +
+      subdial(0) + rider(234, 0) + pose('pose1-1445', [790, 575]) + pin +
       `<g filter="url(#lift)"><circle cx="392" cy="${CY - 150}" r="7" fill="${C.paper}"/><circle cx="412" cy="${CY - 182}" r="11" fill="${C.paper}"/>` +
       `<circle cx="456" cy="${CY - 252}" r="60" fill="${C.paper}"/></g>` + prop('cake', 456, CY - 250, 80),
   },
   {
-    file: 'poster-2-1450', line: '一刻至。', time: '14:50',
+    file: 'poster-2-1450', line: '一刻至', en: 'ARRIVING IN A MOMENT', time: '14:50',
     body: () =>
-      rider(300, 300) + pose('pose2-1450', [785, 640]) + pin +
+      subdial(5) + rider(300, 300) + pose('pose2-1450', [785, 640]) + pin +
       `<g transform="translate(470 ${CY - 330})"><path d="M18 0 H282 a18 18 0 0 1 18 18 V66 a18 18 0 0 1 -18 18 H70 L-12 128 L40 84 H18 a18 18 0 0 1 -18 -18 V18 a18 18 0 0 1 18 -18 Z" fill="${C.paper}" filter="url(#lift)"/>` +
       `<rect x="14" y="16" width="52" height="52" rx="12" fill="${C.face}"/>` + logo(40 - 13 * LOGO_R, 29, 26) +
       T(80, 38, '顺丰同城', { size: 18, w: 700, fill: C.ink }) + T(286, 38, '刚刚', { size: 14, fill: C.soft, anchor: 'end' }) +
       T(80, 64, '骑手已取货，正在赶来', { size: 17, w: 400, fill: C.ink }) + `</g>`,
   },
   {
-    file: 'poster-3-1500', line: '同城，即同时。', time: '15:00',
+    file: 'poster-3-1500', arrived: true, line: '同城，即同时', en: 'SAME CITY, SAME MOMENT', time: '15:00',
     body: () =>
-      rider(0, 359.9) + pose('pose3-1500', [680, 795]) + pin +
+      subdial(15) + rider(0, 359.9) + pose('pose3-1500', [680, 795]) + pin +
       `<ellipse cx="392" cy="${CY + 236}" rx="96" ry="10" fill="${C.ink}" opacity=".16"/>` +
       prop('box-sf', 388, CY + 236 - 156 * SIZE['box-sf'][1] / SIZE['box-sf'][0] / 2, 156) +
       T(664, CY - 420, '叮咚 ~', { size: 26, w: 400, ls: 4, fill: C.red }),
@@ -122,7 +175,7 @@ const posters = [
 
 function svg(p) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${defs()}` +
-    `<rect width="${W}" height="${H}" fill="${C.bg}"/>${dial()}${p.body()}${frame(p)}` +
+    `<rect width="${W}" height="${H}" fill="${C.bg}"/>${city()}${dial()}${p.body()}${frame(p)}` +
     `<rect width="${W}" height="${H}" filter="url(#grain)" opacity=".22" style="mix-blend-mode:multiply"/></svg>`;
 }
 
