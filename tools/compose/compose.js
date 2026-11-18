@@ -256,6 +256,57 @@ function boardSvg(posterSvgs) {
     `<rect width="${BW}" height="${BH}" fill="${C.bg}"/>${s.join('')}</svg>`;
 }
 
+// ===== 竖版展板：之字形排布 + S 形配送路线（3:4）=====
+const ZIG = { k: 0.43, pts: [[420, 372], [780, 820], [420, 1268]], side: ['right', 'left', 'right'] };
+
+function zigScene(p, i) {
+  const [x, y] = ZIG.pts[i], k = ZIG.k;
+  return `<g transform="translate(${x - CX * k} ${y - CY * k}) scale(${k})">${city(p.arrived)}${dial(p.rd)}${p.body()}</g>`;
+}
+
+function zigText(p, i) {
+  const [x, y] = ZIG.pts[i], right = ZIG.side[i] === 'right';
+  const tx = right ? x + 316 : x - 316, a = right ? 'start' : 'end';
+  const dotX = right ? tx + 4 : tx - 4;
+  return [
+    `<circle cx="${dotX}" cy="${y - 92}" r="4" fill="${C.red}"/>`,
+    T(right ? tx + 18 : tx - 18, y - 82, p.time.replace(/\s+p\.m\./, ''), { font: 'EB Garamond', size: 32, w: 400, ls: 3, anchor: a }),
+    T(tx, y + 14, p.beat, { serif: true, size: [...p.beat].length > 5 ? 52 : 62, w: 500, ls: [...p.beat].length > 5 ? 5 : 10, anchor: a }),
+    `<rect x="${right ? tx : tx - 44}" y="${y + 44}" width="44" height="1.5" fill="${C.red}"/>`,
+    T(tx, y + 90, p.en, { font: 'EB Garamond', italic: true, size: 27, w: 400, op: 0.72, anchor: a }),
+  ].join('');
+}
+
+function zigSvg() {
+  const [a, b, c] = ZIG.pts;
+  const route = `M${a[0]} ${a[1]} C ${a[0] + 260} ${a[1] + 190}, ${b[0] - 260} ${b[1] - 190}, ${b[0]} ${b[1]} C ${b[0] - 260} ${b[1] + 190}, ${c[0] + 260} ${c[1] - 190}, ${c[0]} ${c[1]}`;
+  const lockH = 30, lockW = lockH * LOGO_R + 10 + 24 * 4 + 5 * 3;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${defs()}` +
+    `<rect width="${W}" height="${H}" fill="${C.bg}"/>` +
+    `<path d="${route}" fill="none" stroke="${C.red}" stroke-width="3" stroke-dasharray="1 0" opacity=".9"/>` +
+    posters.map(zigScene).join('') + posters.map(zigText).join('') +
+    logo(1120 - lockW, 1528, lockH, true) + T(1120 - lockW + lockH * LOGO_R + 10, 1552, '顺丰同城', { size: 24, w: 700, ls: 5 }) +
+    seal(1120 - lockW - 46, 1518, 40) +
+    `<rect width="${W}" height="${H}" filter="url(#grain)" opacity=".22" style="mix-blend-mode:multiply"/></svg>`;
+}
+
+// ===== 竖版展板 B：团队草案的纵向叠放（居中，时间在上、标题在下）=====
+function stackSvg() {
+  const k = 0.3, ys = [262, 790, 1318], s = [];
+  posters.forEach((p, i) => {
+    const y = ys[i];
+    s.push(`<g transform="translate(${CX - CX * k} ${y - CY * k}) scale(${k})">${city(p.arrived)}${dial(p.rd)}${p.body()}</g>`);
+    s.push(T(CX, y - 214, p.time.replace(/\s+p\.m\./, ''), { font: 'EB Garamond', size: 26, w: 400, anchor: 'middle', ls: 4 }));
+    s.push(T(CX + 4, y + 250, p.beat, { serif: true, size: 44, w: 500, ls: 12, anchor: 'middle' }));
+    s.push(T(CX, y + 284, p.en, { font: 'EB Garamond', italic: true, size: 20, w: 400, op: 0.7, anchor: 'middle' }));
+  });
+  const lockH = 24, lockW = lockH * LOGO_R + 8 + 20 * 4 + 4 * 3;
+  s.push(logo(CX - lockW / 2, 1556, lockH, true) + T(CX - lockW / 2 + lockH * LOGO_R + 8, 1575, '顺丰同城', { size: 20, w: 700, ls: 4 }));
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${defs()}` +
+    `<rect width="${W}" height="${H}" fill="${C.bg}"/>${s.join('')}` +
+    `<rect width="${W}" height="${H}" filter="url(#grain)" opacity=".22" style="mix-blend-mode:multiply"/></svg>`;
+}
+
 function svg(p) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${defs()}` +
     `<rect width="${W}" height="${H}" fill="${C.bg}"/>${stage(city(p.arrived) + dial(p.rd) + p.body())}${frame(p)}` +
@@ -284,5 +335,13 @@ function svg(p) {
   await page.waitForTimeout(400);
   await page.screenshot({ path: path.join(OUT, 'board.png') });
   console.log('board');
+  await page.setViewportSize({ width: W, height: H });
+  await page.setContent(`<html><body style="margin:0">${zigSvg()}</body></html>`);
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: path.join(OUT, 'board-vertical.png') });
+  console.log('board-vertical');
+  await page.setContent(`<html><body style="margin:0">${stackSvg()}</body></html>`);
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: path.join(OUT, 'board-stack.png') });
   await browser.close();
 })();
