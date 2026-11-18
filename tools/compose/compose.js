@@ -232,82 +232,28 @@ const posters = [
 ];
 
 
-// ===== 展板：三个时刻，同一座城（16:9，1920×1080 设计单位）=====
+// ===== 展板：保留三张海报原样，无缝拼进同一个空间（16:9）=====
+// 三张海报黑底同色，边对边拼接后成为一整片夜空；顶部加一条时间轴把三个时刻串起来
 const BW = 1920, BH = 1080;
-const PANEL = { xs: [380, 960, 1540], cy: 470, k: 0.465 };
+const BOARD = { pw: 640, top: 182 }; // 每张海报在展板上的宽度；顶部留给时间轴
 
-// 一条贯穿全宽的夜晚天际线；最左蛋糕店、最右她家
-function skyline() {
-  let seed = 23;
-  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-  const base = 880, s = [];
-  const layer = (minH, maxH, tone, litP) => {
-    let x = -10;
-    while (x < BW + 10) {
-      const w = 34 + rnd() * 50, h = minH + rnd() * (maxH - minH), y = base - h;
-      s.push(`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${(w - 3).toFixed(1)}" height="${h.toFixed(1)}" fill="${tone}"/>`);
-      if (rnd() < 0.3) s.push(`<rect x="${(x + w * 0.3).toFixed(1)}" y="${(y - 12).toFixed(1)}" width="${(w * 0.3).toFixed(1)}" height="12" fill="${tone}"/>`);
-      for (let wy = y + 12; wy < base - 10; wy += 16)
-        for (let wx = x + 8; wx < x + w - 11; wx += 12)
-          if (rnd() < litP) s.push(`<rect x="${wx.toFixed(1)}" y="${wy.toFixed(1)}" width="3.5" height="5" fill="#E7C27D" opacity="${(0.4 + rnd() * 0.5).toFixed(2)}"/>`);
-      x += w;
-    }
-  };
-  layer(140, 330, '#1F1C1A', 0.05);
-  layer(60, 210, '#272320', 0.1);
-  // 最左：蛋糕店（红白遮阳篷 + 亮着的橱窗）
-  s.push(`<rect x="44" y="${base - 112}" width="104" height="112" fill="#2E2926"/>`);
-  for (let i = 0; i < 8; i++) {
-    const x = 40 + i * 14;
-    s.push(`<path d="M${x} ${base - 86} h14 v10 a7 7 0 0 1 -14 0 z" fill="${i % 2 ? C.cream : C.red}" opacity=".92"/>`);
-  }
-  s.push(`<rect x="56" y="${base - 58}" width="50" height="44" fill="#E7C27D" opacity=".42"/>`);
-  s.push(`<rect x="114" y="${base - 58}" width="22" height="58" fill="#1A1817"/>`);
-  // 最右：她家（整栋亮灯 + 暖光晕）
-  s.push(`<circle cx="1830" cy="${base - 140}" r="170" fill="url(#homeGlow)"/>`);
-  s.push(`<rect x="1776" y="${base - 250}" width="112" height="250" fill="#302B28"/>`);
-  for (let wy = base - 232; wy < base - 16; wy += 26)
-    for (let wx = 1790; wx < 1876; wx += 22) s.push(`<rect x="${wx}" y="${wy}" width="7" height="10" fill="#E7C27D" opacity=".62"/>`);
-  s.push(`<rect x="0" y="${base}" width="${BW}" height="1.5" fill="#3A3532"/>`);
-  return s.join('');
-}
-
-// 顶部时间轴：三个节点对准三个表盘，品牌红线从蛋糕店一路走到她家
-function timeline() {
-  const y = 150, x0 = 95, x1 = 1830, s = [];
-  s.push(`<rect x="${x0}" y="${y}" width="${x1 - x0}" height="1" fill="${C.cream}" opacity=".22"/>`);
-  s.push(`<rect x="${x0}" y="${y - 1}" width="${PANEL.xs[2] - x0}" height="3" fill="${C.red}"/>`);
-  posters.forEach((p, i) => {
-    const x = PANEL.xs[i];
-    s.push(`<circle cx="${x}" cy="${y + 0.5}" r="7" fill="${C.bg}" stroke="${C.red}" stroke-width="2.5"/><circle cx="${x}" cy="${y + 0.5}" r="2.5" fill="${C.red}"/>`);
-    s.push(T(x, y - 22, p.time.replace(/\s+p\.m\./, ''), { font: 'EB Garamond', size: 30, w: 400, anchor: 'middle', ls: 3 }));
+function boardSvg(posterSvgs) {
+  const ph = (BOARD.pw * H) / W, s = [];
+  posterSvgs.forEach((ps, i) => {
+    s.push(ps.replace(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">`,
+      `<svg x="${i * BOARD.pw}" y="${BOARD.top}" width="${BOARD.pw}" height="${ph}" viewBox="0 0 ${W} ${H}">`));
   });
-  s.push(T(x1, y - 22, 'p.m.', { font: 'EB Garamond', italic: true, size: 22, w: 400, op: 0.6, anchor: 'end' }));
-  return s.join('');
-}
-
-function panel(p, i) {
-  const x = PANEL.xs[i], k = PANEL.k;
-  return `<g transform="translate(${x - CX * k} ${PANEL.cy - CY * k}) scale(${k})">${dial(p.rd)}${p.body()}</g>`;
-}
-
-function boardText() {
-  const s = [];
+  // 时间轴：节点对准三只表盘（海报内表盘中心 x = CX）
+  const y = 112, xs = [0, 1, 2].map((i) => i * BOARD.pw + (STAGE.cx / W) * BOARD.pw);
+  s.push(`<rect x="80" y="${y}" width="${BW - 160}" height="1" fill="${C.cream}" opacity=".2"/>`);
+  s.push(`<rect x="80" y="${y - 1}" width="${xs[2] - 80}" height="3" fill="${C.red}"/>`);
   posters.forEach((p, i) => {
-    const x = PANEL.xs[i];
-    s.push(T(x + 4, 966, p.beat, { serif: true, size: 54, w: 500, ls: 10, anchor: 'middle' }));
-    s.push(T(x, 1012, p.en, { font: 'EB Garamond', italic: true, size: 24, w: 400, op: 0.7, anchor: 'middle' }));
+    s.push(`<circle cx="${xs[i]}" cy="${y + 0.5}" r="7" fill="${C.bg}" stroke="${C.red}" stroke-width="2.5"/><circle cx="${xs[i]}" cy="${y + 0.5}" r="2.5" fill="${C.red}"/>`);
+    s.push(T(xs[i], y - 24, p.time.replace(/\s+p\.m\./, ''), { font: 'EB Garamond', size: 28, w: 400, anchor: 'middle', ls: 3 }));
   });
-  // 全板唯一的品牌签名：左上 logo；右下印章
-  s.push(logo(60, 40, 30, true) + T(60 + 30 * LOGO_R + 10, 64, '顺丰同城', { size: 22, w: 700, ls: 4 }));
-  s.push(seal(BW - 70, 1004, 44));
-  return s.join('');
-}
-
-function boardSvg() {
+  s.push(T(BW - 80, y - 24, 'p.m.', { font: 'EB Garamond', italic: true, size: 20, w: 400, op: 0.6, anchor: 'end' }));
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${BW} ${BH}" width="${BW}" height="${BH}">${defs()}` +
-    `<rect width="${BW}" height="${BH}" fill="${C.bg}"/>${skyline()}${posters.map(panel).join('')}${timeline()}${boardText()}` +
-    `<rect width="${BW}" height="${BH}" filter="url(#grain)" opacity=".22" style="mix-blend-mode:multiply"/></svg>`;
+    `<rect width="${BW}" height="${BH}" fill="${C.bg}"/>${s.join('')}</svg>`;
 }
 
 function svg(p) {
@@ -334,7 +280,7 @@ function svg(p) {
     <div style="display:flex;gap:40px;justify-content:center;align-items:center;height:1080px">${thumbs}</div></body></html>`);
   await page.waitForTimeout(300);
   await page.screenshot({ path: path.join(OUT, 'triptych.png') });
-  await page.setContent(`<html><body style="margin:0">${boardSvg()}</body></html>`);
+  await page.setContent(`<html><body style="margin:0">${boardSvg(svgs)}</body></html>`);
   await page.waitForTimeout(400);
   await page.screenshot({ path: path.join(OUT, 'board.png') });
   console.log('board');
