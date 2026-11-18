@@ -207,14 +207,14 @@ function frame(p) {
 
 const posters = [
   {
-    file: 'poster-1-1445', cols: ['一念起'], rd: 234, line: '一念起', en: 'A craving begins —', time: '14:45  p.m.',
+    file: 'poster-1-1445', cols: ['一念起'], beat: '一念起，', rd: 234, line: '一念起', en: 'A craving begins —', time: '14:45  p.m.',
     body: () =>
       subdial(0) + rider(234, 0) + pose('pose1-1445', [790, 575]) +
       `<g filter="url(#lift)"><circle cx="392" cy="${CY - 150}" r="7" fill="${C.paper}"/><circle cx="412" cy="${CY - 182}" r="11" fill="${C.paper}"/>` +
       `<circle cx="456" cy="${CY - 252}" r="60" fill="${C.paper}"/></g>` + prop('cake', 456, CY - 250, 80),
   },
   {
-    file: 'poster-2-1450', cols: ['一刻至'], rd: 300, line: '一刻至', en: 'and arrives in a moment.', time: '14:50  p.m.',
+    file: 'poster-2-1450', cols: ['一刻至'], beat: '一刻至。', rd: 300, line: '一刻至', en: 'and arrives in a moment.', time: '14:50  p.m.',
     body: () =>
       subdial(5) + rider(300, 300) + pose('pose2-1450', [785, 640]) +
       `<g transform="translate(470 ${CY - 330})"><path d="M18 0 H282 a18 18 0 0 1 18 18 V66 a18 18 0 0 1 -18 18 H70 L-12 128 L40 84 H18 a18 18 0 0 1 -18 -18 V18 a18 18 0 0 1 18 -18 Z" fill="${C.paper}" filter="url(#lift)"/>` +
@@ -223,13 +223,92 @@ const posters = [
       T(80, 64, '骑手已取货，正在赶来', { size: 17, w: 400, fill: C.ink }) + `</g>`,
   },
   {
-    file: 'poster-3-1500', cols: ['同城', '即同时'], rd: 0, arrived: true, line: '同城，即同时', en: 'Same city, same moment.', time: '15:00  p.m.',
+    file: 'poster-3-1500', cols: ['同城', '即同时'], beat: '同城，即同时。', rd: 0, arrived: true, line: '同城，即同时', en: 'Same city, same moment.', time: '15:00  p.m.',
     body: () =>
       subdial(15) + rider(0, 359.9) + pose('pose3-1500', [680, 795]) +
       `<ellipse cx="392" cy="${CY + 236}" rx="96" ry="10" fill="${C.ink}" opacity=".16"/>` +
       prop('box-sf', 388, CY + 236 - 156 * SIZE['box-sf'][1] / SIZE['box-sf'][0] / 2, 156),
   },
 ];
+
+
+// ===== 展板：三个时刻，同一座城（16:9，1920×1080 设计单位）=====
+const BW = 1920, BH = 1080;
+const PANEL = { xs: [380, 960, 1540], cy: 470, k: 0.465 };
+
+// 一条贯穿全宽的夜晚天际线；最左蛋糕店、最右她家
+function skyline() {
+  let seed = 23;
+  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const base = 880, s = [];
+  const layer = (minH, maxH, tone, litP) => {
+    let x = -10;
+    while (x < BW + 10) {
+      const w = 34 + rnd() * 50, h = minH + rnd() * (maxH - minH), y = base - h;
+      s.push(`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${(w - 3).toFixed(1)}" height="${h.toFixed(1)}" fill="${tone}"/>`);
+      if (rnd() < 0.3) s.push(`<rect x="${(x + w * 0.3).toFixed(1)}" y="${(y - 12).toFixed(1)}" width="${(w * 0.3).toFixed(1)}" height="12" fill="${tone}"/>`);
+      for (let wy = y + 12; wy < base - 10; wy += 16)
+        for (let wx = x + 8; wx < x + w - 11; wx += 12)
+          if (rnd() < litP) s.push(`<rect x="${wx.toFixed(1)}" y="${wy.toFixed(1)}" width="3.5" height="5" fill="#E7C27D" opacity="${(0.4 + rnd() * 0.5).toFixed(2)}"/>`);
+      x += w;
+    }
+  };
+  layer(140, 330, '#1F1C1A', 0.05);
+  layer(60, 210, '#272320', 0.1);
+  // 最左：蛋糕店（红白遮阳篷 + 亮着的橱窗）
+  s.push(`<rect x="44" y="${base - 112}" width="104" height="112" fill="#2E2926"/>`);
+  for (let i = 0; i < 8; i++) {
+    const x = 40 + i * 14;
+    s.push(`<path d="M${x} ${base - 86} h14 v10 a7 7 0 0 1 -14 0 z" fill="${i % 2 ? C.cream : C.red}" opacity=".92"/>`);
+  }
+  s.push(`<rect x="56" y="${base - 58}" width="50" height="44" fill="#E7C27D" opacity=".42"/>`);
+  s.push(`<rect x="114" y="${base - 58}" width="22" height="58" fill="#1A1817"/>`);
+  // 最右：她家（整栋亮灯 + 暖光晕）
+  s.push(`<circle cx="1830" cy="${base - 140}" r="170" fill="url(#homeGlow)"/>`);
+  s.push(`<rect x="1776" y="${base - 250}" width="112" height="250" fill="#302B28"/>`);
+  for (let wy = base - 232; wy < base - 16; wy += 26)
+    for (let wx = 1790; wx < 1876; wx += 22) s.push(`<rect x="${wx}" y="${wy}" width="7" height="10" fill="#E7C27D" opacity=".62"/>`);
+  s.push(`<rect x="0" y="${base}" width="${BW}" height="1.5" fill="#3A3532"/>`);
+  return s.join('');
+}
+
+// 顶部时间轴：三个节点对准三个表盘，品牌红线从蛋糕店一路走到她家
+function timeline() {
+  const y = 150, x0 = 95, x1 = 1830, s = [];
+  s.push(`<rect x="${x0}" y="${y}" width="${x1 - x0}" height="1" fill="${C.cream}" opacity=".22"/>`);
+  s.push(`<rect x="${x0}" y="${y - 1}" width="${PANEL.xs[2] - x0}" height="3" fill="${C.red}"/>`);
+  posters.forEach((p, i) => {
+    const x = PANEL.xs[i];
+    s.push(`<circle cx="${x}" cy="${y + 0.5}" r="7" fill="${C.bg}" stroke="${C.red}" stroke-width="2.5"/><circle cx="${x}" cy="${y + 0.5}" r="2.5" fill="${C.red}"/>`);
+    s.push(T(x, y - 22, p.time.replace(/\s+p\.m\./, ''), { font: 'EB Garamond', size: 30, w: 400, anchor: 'middle', ls: 3 }));
+  });
+  s.push(T(x1, y - 22, 'p.m.', { font: 'EB Garamond', italic: true, size: 22, w: 400, op: 0.6, anchor: 'end' }));
+  return s.join('');
+}
+
+function panel(p, i) {
+  const x = PANEL.xs[i], k = PANEL.k;
+  return `<g transform="translate(${x - CX * k} ${PANEL.cy - CY * k}) scale(${k})">${dial(p.rd)}${p.body()}</g>`;
+}
+
+function boardText() {
+  const s = [];
+  posters.forEach((p, i) => {
+    const x = PANEL.xs[i];
+    s.push(T(x + 4, 966, p.beat, { serif: true, size: 54, w: 500, ls: 10, anchor: 'middle' }));
+    s.push(T(x, 1012, p.en, { font: 'EB Garamond', italic: true, size: 24, w: 400, op: 0.7, anchor: 'middle' }));
+  });
+  // 全板唯一的品牌签名：左上 logo；右下印章
+  s.push(logo(60, 40, 30, true) + T(60 + 30 * LOGO_R + 10, 64, '顺丰同城', { size: 22, w: 700, ls: 4 }));
+  s.push(seal(BW - 70, 1004, 44));
+  return s.join('');
+}
+
+function boardSvg() {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${BW} ${BH}" width="${BW}" height="${BH}">${defs()}` +
+    `<rect width="${BW}" height="${BH}" fill="${C.bg}"/>${skyline()}${posters.map(panel).join('')}${timeline()}${boardText()}` +
+    `<rect width="${BW}" height="${BH}" filter="url(#grain)" opacity=".22" style="mix-blend-mode:multiply"/></svg>`;
+}
 
 function svg(p) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${defs()}` +
@@ -255,5 +334,9 @@ function svg(p) {
     <div style="display:flex;gap:40px;justify-content:center;align-items:center;height:1080px">${thumbs}</div></body></html>`);
   await page.waitForTimeout(300);
   await page.screenshot({ path: path.join(OUT, 'triptych.png') });
+  await page.setContent(`<html><body style="margin:0">${boardSvg()}</body></html>`);
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: path.join(OUT, 'board.png') });
+  console.log('board');
   await browser.close();
 })();
