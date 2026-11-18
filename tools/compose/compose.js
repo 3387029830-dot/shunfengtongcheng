@@ -64,7 +64,8 @@ function pose(name, hip) {
   return `<image href="${IMG[name]}" x="${CX - hx * S}" y="${CY - hy * S}" width="${1536 * S}" height="${1024 * S}"/>`;
 }
 
-const pin = `<circle cx="${CX}" cy="${CY}" r="22" fill="${C.paper}" filter="url(#lift)"/>` + logo(CX - 14 * LOGO_R, CY - 14, 28);
+// 表心：普通钟表轴钉（不再放 logo）
+const pin = `<circle cx="${CX}" cy="${CY}" r="11" fill="${C.ink}" filter="url(#lift)"/><circle cx="${CX}" cy="${CY}" r="4" fill="${C.red}"/>`;
 
 // 顺丰同城专属配送箱（参照官方广告）：黑色立方体 + 斜向红色色带 + logo
 function sfBox(cx, by, w) {
