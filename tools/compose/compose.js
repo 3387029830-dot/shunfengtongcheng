@@ -36,7 +36,7 @@ const prop = (name, cx, cy, w) => {
   return `<image href="${IMG[name]}" x="${cx - w / 2}" y="${cy - h / 2}" width="${w}" height="${h}"/>`;
 };
 const T = (x, y, txt, o = {}) =>
-  `<text x="${x}" y="${y}" font-family="${o.serif ? 'Noto Serif CJK SC' : 'Noto Sans CJK SC'}" font-weight="${o.w || 300}" font-size="${o.size || 24}" fill="${o.fill || C.cream}" letter-spacing="${o.ls || 0}" text-anchor="${o.anchor || 'start'}" style="font-feature-settings:'halt'">${txt}</text>`;
+  `<text x="${x}" y="${y}" font-family="${o.font || (o.serif ? 'Noto Serif CJK SC' : 'Noto Sans CJK SC')}" font-weight="${o.w || 300}" font-size="${o.size || 24}" fill="${o.fill || C.cream}" fill-opacity="${o.op ?? 1}" letter-spacing="${o.ls || 0}" text-anchor="${o.anchor || 'start'}" font-style="${o.italic ? 'italic' : 'normal'}" style="font-feature-settings:'halt','lnum'">${txt}</text>`;
 
 function defs() {
   return `<defs>
@@ -162,28 +162,32 @@ function rider(deg, progress, w = 82) {
   return s.join('');
 }
 
+// 文字系统：中文宋体标题 + 英文 Garamond 斜体（同为衬线，平起平坐），细线分隔画面与文字
 function frame(p) {
+  const ML = 80, MR = W - 80;
   return [
-    logo(80, 76, 44, true),
-    T(80 + 44 * LOGO_R + 12, 112, '顺丰同城', { size: 32, w: 700, ls: 3 }),
-    T(78, 1462, p.line, { serif: true, size: 84, w: 600, ls: 14 }),
-    `<rect x="82" y="1492" width="40" height="1.5" fill="${C.red}"/>`,
-    T(136, 1500, p.en, { size: 15, w: 300, ls: 4, fill: C.soft }),
-    `<circle cx="${1120 - 112}" cy="${1494}" r="4" fill="${C.red}"/>`,
-    T(1120, 1500, p.time, { size: 22, w: 300, ls: 4, anchor: 'end', fill: C.cream }),
+    logo(ML, 76, 44, true),
+    T(ML + 44 * LOGO_R + 12, 112, '顺丰同城', { size: 32, w: 700, ls: 3 }),
+    `<rect x="${ML}" y="1384" width="${MR - ML}" height="1" fill="${C.cream}" opacity=".18"/>`,
+    `<rect x="${ML}" y="1383" width="56" height="3" fill="${C.red}"/>`,
+    T(ML - 4, 1480, p.line, { serif: true, size: 80, w: 600, ls: 10 }),
+    T(ML, 1536, p.en, { font: 'EB Garamond', italic: true, size: 38, w: 400, op: 0.72, ls: 0.5 }),
+    T(MR, 1480, p.time, { font: 'EB Garamond', size: 56, w: 400, anchor: 'end', ls: 2 }),
+    `<circle cx="${MR - 62}" cy="1525" r="5" fill="${C.red}"/>`,
+    T(MR, 1536, 'p.m.', { font: 'EB Garamond', italic: true, size: 34, w: 400, op: 0.72, anchor: 'end' }),
   ].join('');
 }
 
 const posters = [
   {
-    file: 'poster-1-1445', line: '一念起', en: 'A CRAVING BEGINS', time: '14:45',
+    file: 'poster-1-1445', line: '一念起', en: 'A craving begins —', time: '14:45',
     body: () =>
       subdial(0) + rider(234, 0) + pose('pose1-1445', [790, 575]) +
       `<g filter="url(#lift)"><circle cx="392" cy="${CY - 150}" r="7" fill="${C.paper}"/><circle cx="412" cy="${CY - 182}" r="11" fill="${C.paper}"/>` +
       `<circle cx="456" cy="${CY - 252}" r="60" fill="${C.paper}"/></g>` + prop('cake', 456, CY - 250, 80),
   },
   {
-    file: 'poster-2-1450', line: '一刻至', en: 'ARRIVING IN A MOMENT', time: '14:50',
+    file: 'poster-2-1450', line: '一刻至', en: 'and arrives in a moment.', time: '14:50',
     body: () =>
       subdial(5) + rider(300, 300) + pose('pose2-1450', [785, 640]) +
       `<g transform="translate(470 ${CY - 330})"><path d="M18 0 H282 a18 18 0 0 1 18 18 V66 a18 18 0 0 1 -18 18 H70 L-12 128 L40 84 H18 a18 18 0 0 1 -18 -18 V18 a18 18 0 0 1 18 -18 Z" fill="${C.paper}" filter="url(#lift)"/>` +
@@ -192,7 +196,7 @@ const posters = [
       T(80, 64, '骑手已取货，正在赶来', { size: 17, w: 400, fill: C.ink }) + `</g>`,
   },
   {
-    file: 'poster-3-1500', arrived: true, line: '同城，即同时', en: 'SAME CITY, SAME MOMENT', time: '15:00',
+    file: 'poster-3-1500', arrived: true, line: '同城，即同时', en: 'Same city, same moment.', time: '15:00',
     body: () =>
       subdial(15) + rider(0, 359.9) + pose('pose3-1500', [680, 795]) +
       `<ellipse cx="392" cy="${CY + 236}" rx="96" ry="10" fill="${C.ink}" opacity=".16"/>` +
