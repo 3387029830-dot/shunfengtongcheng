@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600" width="1200" height="1600"><rect width="1200" height="1600" fill="#F4EDE4"/>
+<circle cx="600" cy="800" r="485" fill="none" stroke="#E6DACA" stroke-width="70"/>
+<circle cx="600" cy="800" r="485" fill="none" stroke="#BFB2A2" stroke-width="3" stroke-dasharray="14 12"/>
+<path d="M115.0 800.0 A485 485 0 0 1 180.0 557.5" fill="none" stroke="#D6454A" stroke-width="8" stroke-linecap="round" opacity=".55"/>
+<rect x="81" y="766.0000000000001" width="68" height="68" rx="10" fill="#FBF7F1" stroke="#8C7A6B" stroke-width="3"/>
+<text x="115" y="809.0000000000001" font-size="24" text-anchor="middle" fill="#8C7A6B" font-family="WenQuanYi Zen Hei">店</text>
+<path d="M566 345 V309 L600 279 L634 309 V345 Z" fill="#FBF7F1" stroke="#8C7A6B" stroke-width="3"/>
+<text x="600" y="335" font-size="24" text-anchor="middle" fill="#8C7A6B" font-family="WenQuanYi Zen Hei">家</text>
+<circle cx="600" cy="800" r="430" fill="#EADFD1"/>
+<circle cx="600.0" cy="400.0" r="13" fill="#BFB2A2"/>
+<circle cx="800.0" cy="453.6" r="7" fill="#BFB2A2"/>
+<circle cx="946.4" cy="600.0" r="7" fill="#BFB2A2"/>
+<circle cx="1000.0" cy="800.0" r="13" fill="#BFB2A2"/>
+<circle cx="946.4" cy="1000.0" r="7" fill="#BFB2A2"/>
+<circle cx="800.0" cy="1146.4" r="7" fill="#BFB2A2"/>
+<circle cx="600.0" cy="1200.0" r="13" fill="#BFB2A2"/>
+<circle cx="400.0" cy="1146.4" r="7" fill="#BFB2A2"/>
+<circle cx="253.6" cy="1000.0" r="7" fill="#BFB2A2"/>
+<circle cx="200.0" cy="800.0" r="13" fill="#BFB2A2"/>
+<circle cx="253.6" cy="600.0" r="7" fill="#BFB2A2"/>
+<circle cx="400.0" cy="453.6" r="7" fill="#BFB2A2"/>
+<rect x="215" y="695" width="770" height="120" rx="40" fill="#FBF7F1" stroke="#BFB2A2" stroke-width="3"/>
+<rect x="235" y="810" width="730" height="70" rx="22" fill="#FBF7F1" stroke="#BFB2A2" stroke-width="3"/>
+<rect x="195" y="760" width="70" height="125" rx="30" fill="#FBF7F1" stroke="#BFB2A2" stroke-width="3"/>
+<rect x="935" y="760" width="70" height="125" rx="30" fill="#FBF7F1" stroke="#BFB2A2" stroke-width="3"/>
+<ellipse cx="380" cy="700" rx="85" ry="55" fill="#F3E9D8" stroke="#BFB2A2" stroke-width="3" transform="rotate(-30 380 700)"/>
+<line x1="600" y1="800" x2="829.1" y2="780.0" stroke="#4A3A33" stroke-width="40" stroke-linecap="round"/>
+<ellipse cx="839.1" cy="779.1" rx="30" ry="22" fill="#FBF7F1" stroke="#BFB2A2" stroke-width="3" transform="rotate(-5 839.1 779.1)"/>
+<line x1="600" y1="800" x2="366.2" y2="665.0" stroke="#D6454A" stroke-width="52" stroke-linecap="round"/>
+<circle cx="324.6" cy="641.0" r="34" fill="#F1D3BC" stroke="#8C7A6B" stroke-width="3"/>
+<circle cx="293.4" cy="623.0" r="17" fill="#6B4A3A"/>
+<circle cx="600" cy="800" r="16" fill="#4A3A33" stroke="#FBF7F1" stroke-width="5"/>
+<circle cx="180.0" cy="557.5" r="20" fill="#4A3A33" stroke="#FBF7F1" stroke-width="4"/>
+<rect x="390" y="470" width="70" height="120" rx="12" fill="#4A3A33" transform="rotate(-20 425 530)"/>
+      <rect x="400" y="483" width="50" height="90" rx="6" fill="#FFF6E5" transform="rotate(-20 425 530)"/>
+      <text x="520" y="470" font-size="22" fill="#8C7A6B" font-family="WenQuanYi Zen Hei">「骑手已取货」</text>
+<line x1="600" y1="800" x2="253.6" y2="600.0" stroke="#4F74B0" stroke-width="2" stroke-dasharray="6 6"/>
+<text x="130" y="1395" font-size="22" fill="#4F74B0" text-anchor="start" font-family="WenQuanYi Zen Hei">分针抬到 10 点：靠在泡泡球抱枕上半躺，单手举手机（手臂顺带拉长分针）</text><text x="130" y="1430" font-size="22" fill="#4F74B0" text-anchor="start" font-family="WenQuanYi Zen Hei">外圈：骑手已出发，走到 10 点，与她的上半身同一角度（红色 = 已走路程）</text><text x="130" y="1465" font-size="22" fill="#4F74B0" text-anchor="start" font-family="WenQuanYi Zen Hei">手机屏幕：简化的顺丰同城订单界面</text>
+<text x="80" y="150" font-size="56" fill="#4A3A33" font-family="Noto Sans CJK SC" font-weight="300" letter-spacing="4">14:50</text>
+<text x="80" y="192" font-size="22" fill="#4F74B0" text-anchor="start" font-family="WenQuanYi Zen Hei">画2 · 下单</text>
+<rect x="980" y="1470" width="140" height="60" rx="8" fill="none" stroke="#8C7A6B" stroke-width="2" stroke-dasharray="6 5"/>
+<text x="1050" y="1508" font-size="20" text-anchor="middle" fill="#8C7A6B" font-family="WenQuanYi Zen Hei">LOGO</text>
+</svg>
