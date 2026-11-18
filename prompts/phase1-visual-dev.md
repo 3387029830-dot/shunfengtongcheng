@@ -65,3 +65,40 @@ COMPOSITION: plain off-white background, generous empty space, the figure and so
 ### 选定后
 
 用选中的风格重画：人物设定图（含指针姿势）+ 道具设定图（外圈元素改为简洁图标）。提示词在选定后给出。
+
+## v2 · 风格样张审查
+
+素材：`assets/generated/phase1-v2-style/`
+
+| | A 编辑插画 | B 孔版印刷 | C 精致线描 |
+|---|---|---|---|
+| 高级感 | ★★★★ 平涂干净、配色克制，最像品牌广告 | ★★★ 有态度、有设计感，但偏"艺术海报" | ★★ 细线显得单薄，像通用素材插画 |
+| 产品（蛋糕）诱人度 | 最好：奶油、草莓清晰 | 颗粒吃掉了细节 | 一般 |
+| 与代码钟面合成 | 最好：无描边平涂，和矢量几何天然契合 | 难：重颗粒与干净矢量线冲突 | 可以，但线条粗细难统一 |
+| 三张一致性 | 高 | 低（颗粒每次随机） | 中 |
+
+**结论：选 A**，并做两点微调：
+1. 再平一点：减少柔和渐变，边缘更利落（向 B 借一点点颗粒即可）。
+2. 底色在合成时统一替换为 `#F5F1EA`，生成图只需纯色底方便抠图。
+
+**一个修正（我此前的设计问题）**：盘腿正面坐时，腿收在身体正下方，**时针消失了**。
+时针必须沿沙发向右（3 点）伸出。阶段 3 的坐姿改为：**侧身坐在沙发上，上身直立，双腿沿坐垫向右伸、膝盖微屈**（屈膝让腿变短，保持 1 : 0.64）。
+
+**合成策略**：每张"人物 + 沙发"一起生成（坐、靠的接触关系更自然），沙发保持正面、水平；
+我把胯部对齐表心、按刻度微调缩放和位置。其余道具单独生成。
+
+## v3 · 道具设定（风格 A）
+
+```
+Using exactly the same illustration style as the FIRST of the three style images (style A: flat shapes, no outlines, crisp clean edges, very subtle grain, limited palette of off-white #F5F1EA, oat #E3D7C6, ink brown #2B2420, accent red #C93A3A), create a prop sheet. Make it slightly flatter than before — fewer soft gradients, crisper edges.
+
+Plain solid off-white #F5F1EA background. Each object separate with wide spacing, no overlapping, no text, no logos:
+
+1) the same whole strawberry cream cake, side-front view, on a thin dark cake board
+2) an opened delivery box with the flaps open: matte off-white box with one deep ink-brown band, a large blank front panel
+3) a delivery rider on a small electric scooter with an insulated box on the back, side view, facing RIGHT, ink-brown uniform and helmet, highly simplified
+4) a minimal bakery storefront: flat front facade, red and off-white striped awning, one window with a simple cake silhouette — almost iconographic, very few details
+5) a minimal apartment entrance: flat front facade with one door and a small step — almost iconographic, very few details
+
+Landscape 3:2.
+```
