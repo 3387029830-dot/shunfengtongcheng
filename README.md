@@ -18,7 +18,7 @@
 | 0 方案定稿 | 创意、故事线、slogan | ✅ 完成 |
 | 2 构图线框 | 指针角度、长短比例、版式 | ✅ 完成 → [`wireframes/`](wireframes/) |
 | 1 视觉开发 | 风格定调 → 道具设定 | ✅ 完成（风格 A） |
-| 3 正式插画 | 三张姿势图生成 + 合成 | 🔄 姿势图生成中 → [`prompts/phase3-poses.md`](prompts/phase3-poses.md) |
+| 3 正式插画 | 三张姿势图生成 + 合成 | ✅ 合成 v1 完成 → [`output/`](output/)（待审查） |
 | 4 排版与文案 | slogan、时间戳、logo | ⏳ |
 | 5 输出 | 3 × 2400×3200 PNG + 16:9 三联展示 + 设计说明 | ⏳ |
 
@@ -39,3 +39,5 @@ tools/       线框/合成脚本
 ```
 
 重新生成线框：`node tools/wireframe/gen.js`（需要 Playwright）
+
+重新合成海报：`pip install scipy pillow numpy && python3 tools/compose/cutout.py && node tools/compose/compose.js`
