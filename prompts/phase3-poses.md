@@ -94,3 +94,27 @@ Changes:
 
 Plain solid off-white #F5F1EA background, faint contact shadow under the sofa only. No text. Landscape 3:2.
 ```
+
+## 画3 v2 —— ❌ 否决
+
+素材：`assets/generated/phase3-poses-v2/pose3-1500-rejected.webp`
+
+- "咬一口"被画成整齐的楔形缺口，像切蛋糕，不像啃。
+- 仰头 + 翻眼 + 鼓腮 + 奶油"白胡子"叠加，五官扭曲；"a little comical" 被放大成丑。
+- 根因：参考图的神态成立于**低头看嘴边的蛋糕**，而蛋糕举在头顶迫使她仰头翻眼。约束过多也让模型顾此失彼。
+
+## 画3 v3 —— 新姿势：一手啃蛋糕，一手举拳
+
+参考图动作原样采用（蛋糕端到嘴边直接咬），另一只手笔直举过头顶握拳"到手了！"——
+举起的手臂 + 上身仍指向 12 点，分针长度与画1/画2 一致。提示词刻意精简，沙发位置在合成时用代码校正。
+
+```
+Let's try a different pose for the last image — discard the previous version.
+
+Same character, same style, same sofa (front view, horizontal, centered), landscape 3:2, plain off-white #F5F1EA background, no text.
+
+She sits upright on the sofa in side profile facing right, torso vertical, hips at the center of the sofa, legs extended to the right along the seat with knees slightly bent.
+With one hand she holds the whole strawberry cream cake on its board right in front of her face and takes a big bite straight from it — no plate, no fork. Her other arm is raised straight up above her head with a small happy victory fist.
+
+Expression: head slightly lowered, eyes looking down at the cake, cheeks full from the big mouthful, a little whipped cream on her lips. Natural, cute and appetizing — not exaggerated, not distorted.
+```
