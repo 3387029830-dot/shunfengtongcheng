@@ -173,7 +173,7 @@ function frame(p) {
     T(ML - 4, 1480, p.line, { serif: true, size: 80, w: 600, ls: 10 }),
     T(ML, 1536, p.en, { font: 'EB Garamond', italic: true, size: 38, w: 400, op: 0.72, ls: 0.5 }),
     T(MR, 1480, p.time, { font: 'EB Garamond', size: 56, w: 400, anchor: 'end', ls: 2 }),
-    `<circle cx="${MR - 62}" cy="1525" r="5" fill="${C.red}"/>`,
+    `<circle cx="${MR - 82}" cy="1525" r="5" fill="${C.red}"/>`,
     T(MR, 1536, 'p.m.', { font: 'EB Garamond', italic: true, size: 34, w: 400, op: 0.72, anchor: 'end' }),
   ].join('');
 }
