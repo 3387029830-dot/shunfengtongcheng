@@ -164,8 +164,8 @@ function rider(deg, progress, w = 82) {
   return s.join('');
 }
 
-// 文字系统 v4：竖排。表盘缩小并移向左上，右下角留给竖排标题 + 品牌红印章
-const STAGE = { k: 0.92, cx: 552, cy: 694 }; // 整个表盘场景的缩放与新中心
+// 文字系统 v5：竖排 + 中轴对称（"圆月在上、竖排标题在下"的经典构图）
+const STAGE = { k: 0.82, cx: CX, cy: 612 }; // 表盘场景缩放并上移
 const stage = (inner) =>
   `<g transform="translate(${STAGE.cx - CX * STAGE.k} ${STAGE.cy - CY * STAGE.k}) scale(${STAGE.k})">${inner}</g>`;
 
@@ -173,43 +173,48 @@ function vcol(x, y0, chars, o) {
   return [...chars].map((ch, i) => T(x, y0 + i * o.step, ch, { serif: true, size: o.size, w: 500, anchor: 'middle' })).join('');
 }
 
-function seal(x, y, size) {
-  const f = size * 0.36;
+function seal(cx, y, size) {
+  const f = size * 0.36, x = cx - size / 2;
   return `<rect x="${x}" y="${y}" width="${size}" height="${size}" rx="3" fill="${C.red}"/>` +
     `<rect x="${x + 3}" y="${y + 3}" width="${size - 6}" height="${size - 6}" rx="2" fill="none" stroke="${C.cream}" stroke-width="1" opacity=".55"/>` +
-    T(x + size / 2, y + size * 0.47, '同', { serif: true, size: f, w: 700, anchor: 'middle' }) +
-    T(x + size / 2, y + size * 0.47 + f * 1.05, '城', { serif: true, size: f, w: 700, anchor: 'middle' });
+    T(cx, y + size * 0.47, '同', { serif: true, size: f, w: 700, anchor: 'middle' }) +
+    T(cx, y + size * 0.47 + f * 1.05, '城', { serif: true, size: f, w: 700, anchor: 'middle' });
 }
 
+// 竖排细字（旋转 90°），以 (x, yTop) 为起点，沿 x 居中
+const vtext = (x, yTop, txt, o) => `<g transform="translate(${x - o.size * 0.33} ${yTop}) rotate(90)">${T(0, 0, txt, o)}</g>`;
+
 function frame(p) {
-  const size = 70, step = 88, top = 1206, right = 1092, gap = 92;
-  const cols = p.cols; // 从右往左
+  const size = 66, step = 82, top = 1170, gap = 88;
+  const cols = p.cols, n = cols.length;
   const s = [];
-  cols.forEach((c, i) => s.push(vcol(right - i * gap, top + size, c, { size, step })));
-  const left = right - (cols.length - 1) * gap - 62;
-  // 英文：旋转 90°，贴着标题左侧
-  s.push(`<g transform="translate(${left} ${top + 8}) rotate(90)">` +
-    T(0, 0, p.en, { font: 'EB Garamond', italic: true, size: 26, w: 400, op: 0.7, ls: 0.6 }) + `</g>`);
-  // 印章：落在第一列下方
+  // 标题列：整体以中轴居中，自右向左
+  cols.forEach((c, i) => s.push(vcol(CX + ((n - 1) / 2 - i) * gap, top + size, c, { size, step })));
   const longest = Math.max(...cols.map((c) => [...c].length));
-  s.push(seal(right - 27, top + longest * step + 24, 54));
-  // 左上：时间 / 左下：品牌签名
-  s.push(T(80, 112, p.time, { font: 'EB Garamond', size: 40, w: 400, ls: 6 }));
-  s.push(`<rect x="82" y="134" width="36" height="1.5" fill="${C.red}"/>`);
-  s.push(logo(80, 1520, 34, true) + T(80 + 34 * LOGO_R + 12, 1548, '顺丰同城', { size: 26, w: 700, ls: 5 }));
+  const bottom = top + longest * step;
+  // 两侧对称的细竖排：左英文、右时间
+  const flank = 150 + (n - 1) * gap / 2;
+  s.push(vtext(CX - flank, top + 6, p.en, { font: 'EB Garamond', italic: true, size: 24, w: 400, op: 0.7, ls: 0.6 }));
+  s.push(vtext(CX + flank, top + 6, p.time, { font: 'EB Garamond', size: 24, w: 400, op: 0.85, ls: 3 }));
+  s.push(`<circle cx="${CX + flank - 8}" cy="${top - 10}" r="3" fill="${C.red}"/>`);
+  // 印章：标题正下方
+  s.push(seal(CX, bottom + 22, 50));
+  // 品牌签名：底部居中
+  const lockH = 28, lockW = lockH * LOGO_R + 10 + 22 * 4 + 5 * 3;
+  s.push(logo(CX - lockW / 2, 1528, lockH, true) + T(CX - lockW / 2 + lockH * LOGO_R + 10, 1551, '顺丰同城', { size: 22, w: 700, ls: 5 }));
   return s.join('');
 }
 
 const posters = [
   {
-    file: 'poster-1-1445', cols: ['一念起'], rd: 234, line: '一念起', en: 'A craving begins —', time: '14 : 45',
+    file: 'poster-1-1445', cols: ['一念起'], rd: 234, line: '一念起', en: 'A craving begins —', time: '14:45  p.m.',
     body: () =>
       subdial(0) + rider(234, 0) + pose('pose1-1445', [790, 575]) +
       `<g filter="url(#lift)"><circle cx="392" cy="${CY - 150}" r="7" fill="${C.paper}"/><circle cx="412" cy="${CY - 182}" r="11" fill="${C.paper}"/>` +
       `<circle cx="456" cy="${CY - 252}" r="60" fill="${C.paper}"/></g>` + prop('cake', 456, CY - 250, 80),
   },
   {
-    file: 'poster-2-1450', cols: ['一刻至'], rd: 300, line: '一刻至', en: 'and arrives in a moment.', time: '14 : 50',
+    file: 'poster-2-1450', cols: ['一刻至'], rd: 300, line: '一刻至', en: 'and arrives in a moment.', time: '14:50  p.m.',
     body: () =>
       subdial(5) + rider(300, 300) + pose('pose2-1450', [785, 640]) +
       `<g transform="translate(470 ${CY - 330})"><path d="M18 0 H282 a18 18 0 0 1 18 18 V66 a18 18 0 0 1 -18 18 H70 L-12 128 L40 84 H18 a18 18 0 0 1 -18 -18 V18 a18 18 0 0 1 18 -18 Z" fill="${C.paper}" filter="url(#lift)"/>` +
@@ -218,7 +223,7 @@ const posters = [
       T(80, 64, '骑手已取货，正在赶来', { size: 17, w: 400, fill: C.ink }) + `</g>`,
   },
   {
-    file: 'poster-3-1500', cols: ['同城', '即同时'], rd: 0, arrived: true, line: '同城，即同时', en: 'Same city, same moment.', time: '15 : 00',
+    file: 'poster-3-1500', cols: ['同城', '即同时'], rd: 0, arrived: true, line: '同城，即同时', en: 'Same city, same moment.', time: '15:00  p.m.',
     body: () =>
       subdial(15) + rider(0, 359.9) + pose('pose3-1500', [680, 795]) +
       `<ellipse cx="392" cy="${CY + 236}" rx="96" ry="10" fill="${C.ink}" opacity=".16"/>` +
