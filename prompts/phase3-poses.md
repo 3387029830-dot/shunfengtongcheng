@@ -56,3 +56,37 @@ Plain solid off-white #F5F1EA background, only a faint contact shadow under the 
 2. 胯部是否在沙发中点
 3. 分针角度：9 点 / 10 点 / 12 点
 4. 腿是否沿沙发朝右，且明显短于上半身
+
+## v1 审查
+
+素材：`assets/generated/phase3-poses-v1/`
+
+实测（1536×1024）：三张沙发宽度一致（x 85–1451，中点 768）；画3 的沙发整体低了约 140 px，合成时平移即可。
+
+| | 结论 | 说明 |
+|---|---|---|
+| 画1 | ✅ 通过 | 胯部 ≈ 沙发中点；手臂伸直过头顶；上身 : 腿 ≈ 1 : 0.7 |
+| 画2 | ✅ 通过（可选微调） | 上身约 26°，接近 10 点；表情（黄色星星眼、大张嘴）比另两张更卡通，如有余力可返工为"克制的惊喜" |
+| 画3 | 🔁 返工 | ① 胯部偏左约 100 px，上身后仰，蛋糕偏右 → 分针不竖直；② 参考图"直接啃整个蛋糕"的劲儿丢了 |
+
+### 找回"啃整个蛋糕"
+
+参考图的精髓是：不切、不用盘子叉子，捧着整个蛋糕直接下嘴——馋到等不及。
+但如果把蛋糕放到嘴边啃，手臂放下，分针会变短，和腿分不出长短。
+**方案：蛋糕仍举过头顶，但蛋糕正面已经少了一大口，她脸上沾着奶油。**
+观众一眼读出"她刚刚已经啃了一口"——馋的劲儿回来了，分针也保住了。
+
+### 画3 返工提示词
+
+```
+Redo the last image. Keep exactly the same character, style, canvas size, and the SAME sofa as the first image of this set — same size and same vertical position (the sofa top edge at the same height as in the first image).
+
+Changes:
+1) Her hips are exactly at the horizontal center of the sofa.
+2) Her torso is perfectly vertical — not leaning back. Both arms go straight up directly above her shoulders, so the cake is directly above her hips. Head, torso, arms and cake form one vertical line.
+3) The whole strawberry cream cake now has ONE BIG BITE missing from its front edge — a clear, round bite mark showing the sponge layers inside. She has obviously just bitten straight into the whole cake.
+4) Whipped cream smeared on her lips, nose tip and one cheek. Eyes closed, cheeks slightly full as if still chewing, a blissful, satisfied smile.
+5) Legs still extend to the RIGHT along the seat cushion, knees slightly bent, slippers near the right armrest.
+
+Plain solid off-white #F5F1EA background, faint contact shadow under the sofa only. No text. Landscape 3:2.
+```
