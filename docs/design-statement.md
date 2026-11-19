@@ -77,20 +77,20 @@
 
 完整迭代记录、提示词与源文件见项目仓库。
 
-## 八、展板：两个铺垫，一个高潮
+## 八、展板：三个时刻，同一个空间
 
-三张讲的是一个连续的故事，最终以一张竖版展板（`output/board-pyramid.png`，3:4）呈现，采用"品"字形构图：
+三张讲的是一个连续的故事，最终以一张竖版展板（`output/board-vertical.png`，3:4）呈现：
 
-- **层级**：借鉴漫画分镜"铺垫—铺垫—高潮"的节奏。上排两只小表盘并排（14:45 一念起、14:50 一刻至），下方一只大表盘（15:00 送达），故事的高潮在尺寸上最突出。
-- **文字主次**：前两拍是小标题，主标语「同城，即同时」全板只出现一次、字号最大，落在高潮之下；英文与时间作为注脚。
-- **对称与饱满**：上排两只表盘铺满宽度，下方大表盘居中，左右对称且两侧不空。
-- **一次签名**：左上角品牌 logo（与官方广告位置一致）。
+- **之字形排布**：三只被城市环绕的表盘左右交错（左上 → 右中 → 左下），表盘得以放大，两侧不再空。
+- **S 形配送路线**：一条品牌红线从第一只表盘蜿蜒连到第三只——骑手的路程连成一条线，也呼应最初草图里那条弯曲的道路。
+- **文字在表盘空出的一侧**：每组为「标题 → 红线 + 时间注脚 → 英文」，左右交替，形成对角平衡；三句标题从上读到下是完整的一句：「一念起，一刻至。同城，即同时。」
+- **一次签名**：右下角品牌 logo，全板只出现一次。
 
-备选：`output/board-chrono.png`（计时码表：主表盘是结局，两只副表盘是前两拍）、`output/board-stack.png`（纵向叠放）、`output/board-vertical.png`（之字形）、`output/board.png`（16:9 横版）。
+备选：`output/board-chrono.png`（计时码表）、`output/board-pyramid.png`（"品"字形）、`output/board-stack.png`（纵向叠放）、`output/board.png`（16:9 横版）。
 
 ## 九、交付文件
 
 - `output/poster-1-1445.png`、`output/poster-2-1450.png`、`output/poster-3-1500.png`
-- `output/board-pyramid.png`（竖版展板，主交付）
-- `output/board-stack.png`、`output/board-vertical.png`、`output/board.png`（备选展板）
+- `output/board-vertical.png`（竖版展板，主交付）
+- `output/board-chrono.png`、`output/board-pyramid.png`、`output/board-stack.png`、`output/board.png`（备选展板）
 - `output/triptych.png`（三张单图并列预览）
