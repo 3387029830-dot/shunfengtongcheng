@@ -36,7 +36,7 @@ const prop = (name, cx, cy, w) => {
   return `<image href="${IMG[name]}" x="${cx - w / 2}" y="${cy - h / 2}" width="${w}" height="${h}"/>`;
 };
 const T = (x, y, txt, o = {}) =>
-  `<text x="${x}" y="${y}" font-family="${o.font || (o.serif ? 'Noto Serif CJK SC' : 'Noto Sans CJK SC')}" font-weight="${o.w || 300}" font-size="${o.size || 24}" fill="${o.fill || C.cream}" fill-opacity="${o.op ?? 1}" letter-spacing="${o.ls || 0}" text-anchor="${o.anchor || 'start'}" font-style="${o.italic ? 'italic' : 'normal'}" style="font-feature-settings:'halt','lnum'">${txt}</text>`;
+  `<text x="${x}" y="${y}" font-family="${o.font || (o.serif ? 'MF LangSong' : 'Source Han Sans CN')}" font-weight="${o.w || 300}" font-size="${o.size || 24}" fill="${o.fill || C.cream}" fill-opacity="${o.op ?? 1}" letter-spacing="${o.ls || 0}" text-anchor="${o.anchor || 'start'}" font-style="${o.italic ? 'italic' : 'normal'}" style="font-feature-settings:'halt','lnum'">${txt}</text>`;
 
 function defs() {
   return `<defs>
@@ -194,13 +194,13 @@ function frame(p) {
   const bottom = top + longest * step;
   // 两侧对称的细竖排：左英文、右时间
   const flank = 150 + (n - 1) * gap / 2;
-  s.push(vtext(CX - flank, top + 6, p.en, { font: 'EB Garamond', italic: true, size: 24, w: 400, op: 0.7, ls: 0.6 }));
-  s.push(vtext(CX + flank, top + 6, p.time, { font: 'EB Garamond', size: 24, w: 400, op: 0.85, ls: 3 }));
+  s.push(vtext(CX - flank, top + 6, p.en, { font: 'MF LangSong', size: 24, w: 400, op: 0.7, ls: 0.6 }));
+  s.push(vtext(CX + flank, top + 6, p.time, { font: 'MF LangSong', size: 24, w: 400, op: 0.85, ls: 3 }));
   s.push(`<circle cx="${CX + flank - 8}" cy="${top - 10}" r="3" fill="${C.red}"/>`);
   // 印章：标题正下方
   // 品牌签名：底部居中
   const lockH = 28, lockW = lockH * LOGO_R + 10 + 22 * 4 + 5 * 3;
-  s.push(logo(CX - lockW / 2, 1528, lockH, true) + T(CX - lockW / 2 + lockH * LOGO_R + 10, 1551, '顺丰同城', { size: 22, w: 700, ls: 5 }));
+  s.push(logo(CX - lockW / 2, 1528, lockH, true) + T(CX - lockW / 2 + lockH * LOGO_R + 10, 1551, '顺丰同城', { font: 'HYYakuHei', size: 22, w: 700, ls: 5 }));
   return s.join('');
 }
 
@@ -218,7 +218,7 @@ const posters = [
       subdial(5) + rider(300, 300) + pose('pose2-1450', [785, 640]) +
       `<g transform="translate(470 ${CY - 330})"><path d="M18 0 H282 a18 18 0 0 1 18 18 V66 a18 18 0 0 1 -18 18 H70 L-12 128 L40 84 H18 a18 18 0 0 1 -18 -18 V18 a18 18 0 0 1 18 -18 Z" fill="${C.paper}" filter="url(#lift)"/>` +
       `<rect x="14" y="16" width="52" height="52" rx="12" fill="${C.face}"/>` + logo(40 - 13 * LOGO_R, 29, 26) +
-      T(80, 38, '顺丰同城', { size: 18, w: 700, fill: C.ink }) + T(286, 38, '刚刚', { size: 14, fill: C.soft, anchor: 'end' }) +
+      T(80, 38, '顺丰同城', { font: 'HYYakuHei', size: 18, w: 700, fill: C.ink }) + T(286, 38, '刚刚', { size: 14, fill: C.soft, anchor: 'end' }) +
       T(80, 64, '骑手已取货，正在赶来', { size: 17, w: 400, fill: C.ink }) + `</g>`,
   },
   {
@@ -248,9 +248,9 @@ function boardSvg(posterSvgs) {
   s.push(`<rect x="80" y="${y - 1}" width="${xs[2] - 80}" height="3" fill="${C.red}"/>`);
   posters.forEach((p, i) => {
     s.push(`<circle cx="${xs[i]}" cy="${y + 0.5}" r="7" fill="${C.bg}" stroke="${C.red}" stroke-width="2.5"/><circle cx="${xs[i]}" cy="${y + 0.5}" r="2.5" fill="${C.red}"/>`);
-    s.push(T(xs[i], y - 24, p.time.replace(/\s+p\.m\./, ''), { font: 'EB Garamond', size: 28, w: 400, anchor: 'middle', ls: 3 }));
+    s.push(T(xs[i], y - 24, p.time.replace(/\s+p\.m\./, ''), { font: 'MF LangSong', size: 28, w: 400, anchor: 'middle', ls: 3 }));
   });
-  s.push(T(BW - 80, y - 24, 'p.m.', { font: 'EB Garamond', italic: true, size: 20, w: 400, op: 0.6, anchor: 'end' }));
+  s.push(T(BW - 80, y - 24, 'p.m.', { font: 'MF LangSong', size: 20, w: 400, op: 0.6, anchor: 'end' }));
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${BW} ${BH}" width="${BW}" height="${BH}">${defs()}` +
     `<rect width="${BW}" height="${BH}" fill="${C.bg}"/>${s.join('')}</svg>`;
 }
@@ -270,10 +270,10 @@ function zigText(p, i) {
   // 时间降级为注脚：与红色短线同一行，小字、淡色，像落款
   const ruleX = right ? tx : tx - 40, timeX = right ? tx + 54 : tx - 54;
   return [
-    T(tx, y - 4, p.beat, { serif: true, size: long ? 52 : 62, w: 500, ls: long ? 5 : 10, anchor: a }),
+    T(tx, y - 4, p.beat, { serif: true, size: long ? 52 : 62, w: 400, ls: long ? 5 : 10, anchor: a }),
     `<rect x="${ruleX}" y="${y + 33}" width="40" height="1.5" fill="${C.red}"/>`,
-    T(timeX, y + 41, p.time, { font: 'EB Garamond', size: 22, w: 400, ls: 2, op: 0.55, anchor: a }),
-    T(tx, y + 88, p.en, { font: 'EB Garamond', italic: true, size: 27, w: 400, op: 0.72, anchor: a }),
+    T(timeX, y + 41, p.time, { font: 'MF LangSong', size: 22, w: 400, ls: 2, op: 0.55, anchor: a }),
+    T(tx, y + 88, p.en, { font: 'MF LangSong', size: 27, w: 400, op: 0.72, anchor: a }),
   ].join('');
 }
 
@@ -285,7 +285,7 @@ function zigSvg() {
     `<rect width="${W}" height="${H}" fill="${C.bg}"/>` +
     `<path d="${route}" fill="none" stroke="${C.red}" stroke-width="3" stroke-dasharray="1 0" opacity=".9"/>` +
     posters.map(zigScene).join('') + posters.map(zigText).join('') +
-    logo(1120 - lockW, 1528, lockH, true) + T(1120 - lockW + lockH * LOGO_R + 10, 1552, '顺丰同城', { size: 24, w: 700, ls: 5 }) +
+    logo(1120 - lockW, 1528, lockH, true) + T(1120 - lockW + lockH * LOGO_R + 10, 1552, '顺丰同城', { font: 'HYYakuHei', size: 24, w: 700, ls: 5 }) +
     `<rect width="${W}" height="${H}" filter="url(#grain)" opacity=".22" style="mix-blend-mode:multiply"/></svg>`;
 }
 
@@ -303,14 +303,14 @@ function stackSvg() {
     const top = y - (longest * step) / 2 + size * 0.86;
     cols.forEach((c, ci) => s.push(vcol(leftX + ((n - 1) / 2 - ci) * gap, top, c, { size, step })));
     // 右：竖排英文 + 红线 + 时间
-    const en = { font: 'EB Garamond', italic: true, size: 26, w: 400, op: 0.72, ls: 0.6 };
+    const en = { font: 'MF LangSong', size: 26, w: 400, op: 0.72, ls: 0.6 };
     const enLen = p.en.length * 11.2;
     s.push(vtext(rightX, y - enLen / 2 - 40, p.en, en));
     s.push(`<rect x="${rightX + 44}" y="${y - enLen / 2 - 40}" width="1.5" height="34" fill="${C.red}"/>`);
-    s.push(vtext(rightX + 52, y - enLen / 2 + 6, p.time, { font: 'EB Garamond', size: 20, w: 400, op: 0.55, ls: 2 }));
+    s.push(vtext(rightX + 52, y - enLen / 2 + 6, p.time, { font: 'MF LangSong', size: 20, w: 400, op: 0.55, ls: 2 }));
   });
   const lockH = 32, lockW = lockH * LOGO_R + 10 + 26 * 4 + 5 * 3;
-  s.push(logo(80, 60, lockH, true) + T(80 + lockH * LOGO_R + 10, 86, '顺丰同城', { size: 26, w: 700, ls: 5 }));
+  s.push(logo(80, 60, lockH, true) + T(80 + lockH * LOGO_R + 10, 86, '顺丰同城', { font: 'HYYakuHei', size: 26, w: 700, ls: 5 }));
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${defs()}` +
     `<rect width="${W}" height="${H}" fill="${C.bg}"/>${s.join('')}` +
     `<rect width="${W}" height="${H}" filter="url(#grain)" opacity=".22" style="mix-blend-mode:multiply"/></svg>`;
@@ -332,20 +332,20 @@ function pyramidSvg() {
     const p = posters[i], x = xs[i];
     s.push(scene(p, x, row, small));
     s.push(T(x + 5, row + small + 64, p.line, { serif: true, size: 46, w: 500, ls: 14, anchor: 'middle' }));
-    s.push(T(x, row + small + 98, `${p.en}`, { font: 'EB Garamond', italic: true, size: 21, w: 400, op: 0.7, anchor: 'middle' }));
+    s.push(T(x, row + small + 98, `${p.en}`, { font: 'MF LangSong', size: 21, w: 400, op: 0.7, anchor: 'middle' }));
   });
   // 时间注脚：放在小表盘上方
-  [0, 1].forEach((i) => s.push(T(xs[i], row - small - 22, posters[i].time, { font: 'EB Garamond', size: 20, w: 400, op: 0.55, ls: 3, anchor: 'middle' })));
+  [0, 1].forEach((i) => s.push(T(xs[i], row - small - 22, posters[i].time, { font: 'MF LangSong', size: 20, w: 400, op: 0.55, ls: 3, anchor: 'middle' })));
   // 下方：高潮大表盘
   const p3 = posters[2];
   s.push(scene(p3, CX, bigY, big));
-  s.push(T(CX, bigY - big - 26, p3.time, { font: 'EB Garamond', size: 22, w: 400, op: 0.6, ls: 3, anchor: 'middle' }));
+  s.push(T(CX, bigY - big - 26, p3.time, { font: 'MF LangSong', size: 22, w: 400, op: 0.6, ls: 3, anchor: 'middle' }));
   // 主标语：全板唯一的大字
   s.push(T(CX + 8, 1506, '同城，即同时', { serif: true, size: 64, w: 600, ls: 18, anchor: 'middle' }));
   s.push(`<rect x="${CX - 20}" y="1530" width="40" height="1.5" fill="${C.red}"/>`);
-  s.push(T(CX, 1568, p3.en, { font: 'EB Garamond', italic: true, size: 24, w: 400, op: 0.72, anchor: 'middle' }));
+  s.push(T(CX, 1568, p3.en, { font: 'MF LangSong', size: 24, w: 400, op: 0.72, anchor: 'middle' }));
   // 品牌：左上
-  s.push(logo(80, 56, 30, true) + T(80 + 30 * LOGO_R + 10, 80, '顺丰同城', { size: 24, w: 700, ls: 5 }));
+  s.push(logo(80, 56, 30, true) + T(80 + 30 * LOGO_R + 10, 80, '顺丰同城', { font: 'HYYakuHei', size: 24, w: 700, ls: 5 }));
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${defs()}` +
     `<rect width="${W}" height="${H}" fill="${C.bg}"/>${s.join('')}` +
     `<rect width="${W}" height="${H}" filter="url(#grain)" opacity=".22" style="mix-blend-mode:multiply"/></svg>`;
@@ -375,15 +375,15 @@ function chronoSvg() {
   SUB.forEach((d, i) => {
     const p = posters[i], y = d.y + d.r + 74;
     s.push(T(d.x + 6, y, p.line, { serif: true, size: 34, w: 500, ls: 12, anchor: 'middle' }));
-    s.push(T(d.x, y + 32, `${p.time}`, { font: 'EB Garamond', size: 17, w: 400, op: 0.55, ls: 3, anchor: 'middle' }));
+    s.push(T(d.x, y + 32, `${p.time}`, { font: 'MF LangSong', size: 17, w: 400, op: 0.55, ls: 3, anchor: 'middle' }));
   });
   // 主表盘时间：顶部居中
-  s.push(T(CX, 98, p3.time, { font: 'EB Garamond', size: 22, w: 400, op: 0.6, ls: 4, anchor: 'middle' }));
+  s.push(T(CX, 98, p3.time, { font: 'MF LangSong', size: 22, w: 400, op: 0.6, ls: 4, anchor: 'middle' }));
   // 主标语：全板唯一的大字
   s.push(T(CX + 9, 1494, '同城，即同时', { serif: true, size: 66, w: 600, ls: 18, anchor: 'middle' }));
   s.push(`<rect x="${CX - 20}" y="1520" width="40" height="1.5" fill="${C.red}"/>`);
-  s.push(T(CX, 1560, 'A craving begins — and arrives in a moment. Same city, same moment.', { font: 'EB Garamond', italic: true, size: 21, w: 400, op: 0.68, anchor: 'middle' }));
-  s.push(logo(80, 56, 30, true) + T(80 + 30 * LOGO_R + 10, 80, '顺丰同城', { size: 24, w: 700, ls: 5 }));
+  s.push(T(CX, 1560, 'A craving begins — and arrives in a moment. Same city, same moment.', { font: 'MF LangSong', size: 21, w: 400, op: 0.68, anchor: 'middle' }));
+  s.push(logo(80, 56, 30, true) + T(80 + 30 * LOGO_R + 10, 80, '顺丰同城', { font: 'HYYakuHei', size: 24, w: 700, ls: 5 }));
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${defs()}` +
     `<rect width="${W}" height="${H}" fill="${C.bg}"/>${s.join('')}` +
     `<rect width="${W}" height="${H}" filter="url(#grain)" opacity=".22" style="mix-blend-mode:multiply"/></svg>`;

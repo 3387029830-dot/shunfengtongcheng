@@ -13,6 +13,7 @@ from scipy import ndimage
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "assets/generated/phase3-poses-final"
 OUT = ROOT / "build/cutouts"
+FONTS = Path("/usr/local/share/fonts/sfpack")  # 官方素材包字体（授权所限，不入库）
 OUT.mkdir(parents=True, exist_ok=True)
 
 LO, HI = 8, 40  # 与背景色差（RGB 绝对差之和）的软阈值
@@ -80,8 +81,8 @@ if __name__ == "__main__":
     mark = mark.resize((round(mark.width * mh / mark.height), mh), Image.LANCZOS)
     box.alpha_composite(mark, (450, 610))
     d = ImageDraw.Draw(box)
-    bold = ImageFont.truetype("/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc", 60, index=2)
-    light = ImageFont.truetype("/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc", 22, index=2)
+    bold = ImageFont.truetype(str(FONTS / "HYYaKuHei-75W.ttf"), 60)
+    light = ImageFont.truetype(str(FONTS / "SOURCEHANSANSCN-REGULAR.OTF"), 22)
     d.text((450 + mark.width + 16, 606), "顺丰同城", font=bold, fill=(251, 248, 244, 255))
     d.text((452, 712), "专 业 同 城 急 送", font=light, fill=(185, 177, 168, 255))
     print("prop box-sf", save_trim(np.asarray(box), "box-sf"))

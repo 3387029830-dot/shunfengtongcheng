@@ -40,4 +40,6 @@ tools/       线框/合成脚本
 
 重新生成线框：`node tools/wireframe/gen.js`（需要 Playwright）
 
+字体：使用品牌官方素材包中的造字工房朗宋、汉仪雅酷黑、思源黑体 CN。字体受授权限制**不入库**，需从素材包解压到 `/usr/local/share/fonts/sfpack/` 后运行 `fc-cache -f`。
+
 重新合成海报：`pip install scipy pillow numpy && python3 tools/compose/cutout.py && node tools/compose/compose.js`
