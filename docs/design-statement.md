@@ -77,20 +77,20 @@
 
 完整迭代记录、提示词与源文件见项目仓库。
 
-## 八、展板：三个时刻，同一个空间
+## 八、展板：两个铺垫，一个高潮
 
-三张讲的是一个连续的故事，最终以一张竖版展板（`output/board-stack.png`，3:4）呈现：
+三张讲的是一个连续的故事，最终以一张竖版展板（`output/board-pyramid.png`，3:4）呈现，采用"品"字形构图：
 
-- **纵向叠放**：三只被城市环绕的表盘沿中轴自上而下排列，从上看到下就是故事的先后。
-- **三栏对称**：左栏竖排中文标题，中栏表盘，右栏竖排英文 + 红线 + 时间注脚——文字分到两侧，既填满左右，又让表盘可以放大。
-- **一句话**：三句竖排标题自上而下读是完整的一句：「一念起，一刻至。同城，即同时。」
-- **一次签名**：左上角品牌 logo（与官方广告位置一致），全板只出现一次。
+- **层级**：借鉴漫画分镜"铺垫—铺垫—高潮"的节奏。上排两只小表盘并排（14:45 一念起、14:50 一刻至），下方一只大表盘（15:00 送达），故事的高潮在尺寸上最突出。
+- **文字主次**：前两拍是小标题，主标语「同城，即同时」全板只出现一次、字号最大，落在高潮之下；英文与时间作为注脚。
+- **对称与饱满**：上排两只表盘铺满宽度，下方大表盘居中，左右对称且两侧不空。
+- **一次签名**：左上角品牌 logo（与官方广告位置一致）。
 
-备选：`output/board-vertical.png`（之字形 + S 形配送路线）、`output/board.png`（16:9 横版无缝拼接）。
+备选：`output/board-stack.png`（纵向叠放）、`output/board-vertical.png`（之字形）、`output/board.png`（16:9 横版）。
 
 ## 九、交付文件
 
 - `output/poster-1-1445.png`、`output/poster-2-1450.png`、`output/poster-3-1500.png`
-- `output/board-stack.png`（竖版展板，主交付）
-- `output/board-vertical.png`、`output/board.png`（备选展板）
+- `output/board-pyramid.png`（竖版展板，主交付）
+- `output/board-stack.png`、`output/board-vertical.png`、`output/board.png`（备选展板）
 - `output/triptych.png`（三张单图并列预览）

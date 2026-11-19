@@ -316,6 +316,41 @@ function stackSvg() {
     `<rect width="${W}" height="${H}" filter="url(#grain)" opacity=".22" style="mix-blend-mode:multiply"/></svg>`;
 }
 
+// ===== 竖版展板 C："品"字形——两个铺垫 + 一个高潮（3:4）=====
+// 上排：画1、画2 小表盘并排（铺垫）；下方：画3 大表盘（高潮）；主标语只出现一次
+function pyramidSvg() {
+  const OUTER = R_FACE + 122; // 含城市环的外半径（表盘场景单位）
+  const scene = (p, x, y, r) => {
+    const k = r / OUTER;
+    return `<g transform="translate(${x - CX * k} ${y - CY * k}) scale(${k})">${city(p.arrived)}${dial(p.rd)}${p.body()}</g>`;
+  };
+  const s = [];
+  const small = 232, big = 306, row = 372, bigY = 1118;
+  const xs = [318, 882];
+  // 上排两张：小表盘 + 下方小标题、时间注脚、英文
+  [0, 1].forEach((i) => {
+    const p = posters[i], x = xs[i];
+    s.push(scene(p, x, row, small));
+    s.push(T(x + 5, row + small + 64, p.line, { serif: true, size: 46, w: 500, ls: 14, anchor: 'middle' }));
+    s.push(T(x, row + small + 98, `${p.en}`, { font: 'EB Garamond', italic: true, size: 21, w: 400, op: 0.7, anchor: 'middle' }));
+  });
+  // 时间注脚：放在小表盘上方
+  [0, 1].forEach((i) => s.push(T(xs[i], row - small - 22, posters[i].time, { font: 'EB Garamond', size: 20, w: 400, op: 0.55, ls: 3, anchor: 'middle' })));
+  // 下方：高潮大表盘
+  const p3 = posters[2];
+  s.push(scene(p3, CX, bigY, big));
+  s.push(T(CX, bigY - big - 26, p3.time, { font: 'EB Garamond', size: 22, w: 400, op: 0.6, ls: 3, anchor: 'middle' }));
+  // 主标语：全板唯一的大字
+  s.push(T(CX + 8, 1506, '同城，即同时', { serif: true, size: 64, w: 600, ls: 18, anchor: 'middle' }));
+  s.push(`<rect x="${CX - 20}" y="1530" width="40" height="1.5" fill="${C.red}"/>`);
+  s.push(T(CX, 1568, p3.en, { font: 'EB Garamond', italic: true, size: 24, w: 400, op: 0.72, anchor: 'middle' }));
+  // 品牌：左上
+  s.push(logo(80, 56, 30, true) + T(80 + 30 * LOGO_R + 10, 80, '顺丰同城', { size: 24, w: 700, ls: 5 }));
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${defs()}` +
+    `<rect width="${W}" height="${H}" fill="${C.bg}"/>${s.join('')}` +
+    `<rect width="${W}" height="${H}" filter="url(#grain)" opacity=".22" style="mix-blend-mode:multiply"/></svg>`;
+}
+
 function svg(p) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${defs()}` +
     `<rect width="${W}" height="${H}" fill="${C.bg}"/>${stage(city(p.arrived) + dial(p.rd) + p.body())}${frame(p)}` +
@@ -352,5 +387,8 @@ function svg(p) {
   await page.setContent(`<html><body style="margin:0">${stackSvg()}</body></html>`);
   await page.waitForTimeout(400);
   await page.screenshot({ path: path.join(OUT, 'board-stack.png') });
+  await page.setContent(`<html><body style="margin:0">${pyramidSvg()}</body></html>`);
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: path.join(OUT, 'board-pyramid.png') });
   await browser.close();
 })();
