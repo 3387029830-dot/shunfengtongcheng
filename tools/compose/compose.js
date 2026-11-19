@@ -198,7 +198,6 @@ function frame(p) {
   s.push(vtext(CX + flank, top + 6, p.time, { font: 'EB Garamond', size: 24, w: 400, op: 0.85, ls: 3 }));
   s.push(`<circle cx="${CX + flank - 8}" cy="${top - 10}" r="3" fill="${C.red}"/>`);
   // 印章：标题正下方
-  s.push(seal(CX, bottom + 22, 50));
   // 品牌签名：底部居中
   const lockH = 28, lockW = lockH * LOGO_R + 10 + 22 * 4 + 5 * 3;
   s.push(logo(CX - lockW / 2, 1528, lockH, true) + T(CX - lockW / 2 + lockH * LOGO_R + 10, 1551, '顺丰同城', { size: 22, w: 700, ls: 5 }));
@@ -286,7 +285,6 @@ function zigSvg() {
     `<path d="${route}" fill="none" stroke="${C.red}" stroke-width="3" stroke-dasharray="1 0" opacity=".9"/>` +
     posters.map(zigScene).join('') + posters.map(zigText).join('') +
     logo(1120 - lockW, 1528, lockH, true) + T(1120 - lockW + lockH * LOGO_R + 10, 1552, '顺丰同城', { size: 24, w: 700, ls: 5 }) +
-    seal(1120 - lockW - 46, 1518, 40) +
     `<rect width="${W}" height="${H}" filter="url(#grain)" opacity=".22" style="mix-blend-mode:multiply"/></svg>`;
 }
 
