@@ -289,18 +289,28 @@ function zigSvg() {
     `<rect width="${W}" height="${H}" filter="url(#grain)" opacity=".22" style="mix-blend-mode:multiply"/></svg>`;
 }
 
-// ===== 竖版展板 B：团队草案的纵向叠放（居中，时间在上、标题在下）=====
+// ===== 竖版展板 B：居中纵向叠放；文字移到两侧竖排，填满左右 =====
+// 左：竖排中文标题 / 中：表盘 / 右：竖排英文 + 红线 + 时间（注脚）
 function stackSvg() {
-  const k = 0.3, ys = [262, 790, 1318], s = [];
+  const k = 0.38, ys = [302, 800, 1298], s = [];
+  const ringR = 0.38 * (R_FACE + 122), leftX = CX - ringR - 118, rightX = CX + ringR + 104;
   posters.forEach((p, i) => {
     const y = ys[i];
     s.push(`<g transform="translate(${CX - CX * k} ${y - CY * k}) scale(${k})">${city(p.arrived)}${dial(p.rd)}${p.body()}</g>`);
-    s.push(T(CX, y - 214, p.time.replace(/\s+p\.m\./, ''), { font: 'EB Garamond', size: 26, w: 400, anchor: 'middle', ls: 4 }));
-    s.push(T(CX + 4, y + 250, p.beat, { serif: true, size: 44, w: 500, ls: 12, anchor: 'middle' }));
-    s.push(T(CX, y + 284, p.en, { font: 'EB Garamond', italic: true, size: 20, w: 400, op: 0.7, anchor: 'middle' }));
+    // 左：竖排中文（多列时自右向左，整体以 leftX 居中）
+    const size = 58, step = 74, gap = 74, cols = p.cols, n = cols.length;
+    const longest = Math.max(...cols.map((c) => [...c].length));
+    const top = y - (longest * step) / 2 + size * 0.86;
+    cols.forEach((c, ci) => s.push(vcol(leftX + ((n - 1) / 2 - ci) * gap, top, c, { size, step })));
+    // 右：竖排英文 + 红线 + 时间
+    const en = { font: 'EB Garamond', italic: true, size: 26, w: 400, op: 0.72, ls: 0.6 };
+    const enLen = p.en.length * 11.2;
+    s.push(vtext(rightX, y - enLen / 2 - 40, p.en, en));
+    s.push(`<rect x="${rightX + 44}" y="${y - enLen / 2 - 40}" width="1.5" height="34" fill="${C.red}"/>`);
+    s.push(vtext(rightX + 52, y - enLen / 2 + 6, p.time, { font: 'EB Garamond', size: 20, w: 400, op: 0.55, ls: 2 }));
   });
-  const lockH = 24, lockW = lockH * LOGO_R + 8 + 20 * 4 + 4 * 3;
-  s.push(logo(CX - lockW / 2, 1556, lockH, true) + T(CX - lockW / 2 + lockH * LOGO_R + 8, 1575, '顺丰同城', { size: 20, w: 700, ls: 4 }));
+  const lockH = 32, lockW = lockH * LOGO_R + 10 + 26 * 4 + 5 * 3;
+  s.push(logo(80, 60, lockH, true) + T(80 + lockH * LOGO_R + 10, 86, '顺丰同城', { size: 26, w: 700, ls: 5 }));
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${defs()}` +
     `<rect width="${W}" height="${H}" fill="${C.bg}"/>${s.join('')}` +
     `<rect width="${W}" height="${H}" filter="url(#grain)" opacity=".22" style="mix-blend-mode:multiply"/></svg>`;
