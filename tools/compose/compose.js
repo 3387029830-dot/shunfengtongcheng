@@ -266,13 +266,14 @@ function zigScene(p, i) {
 function zigText(p, i) {
   const [x, y] = ZIG.pts[i], right = ZIG.side[i] === 'right';
   const tx = right ? x + 316 : x - 316, a = right ? 'start' : 'end';
-  const dotX = right ? tx + 4 : tx - 4;
+  const long = [...p.beat].length > 5;
+  // 时间降级为注脚：与红色短线同一行，小字、淡色，像落款
+  const ruleX = right ? tx : tx - 40, timeX = right ? tx + 54 : tx - 54;
   return [
-    `<circle cx="${dotX}" cy="${y - 92}" r="4" fill="${C.red}"/>`,
-    T(right ? tx + 18 : tx - 18, y - 82, p.time.replace(/\s+p\.m\./, ''), { font: 'EB Garamond', size: 32, w: 400, ls: 3, anchor: a }),
-    T(tx, y + 14, p.beat, { serif: true, size: [...p.beat].length > 5 ? 52 : 62, w: 500, ls: [...p.beat].length > 5 ? 5 : 10, anchor: a }),
-    `<rect x="${right ? tx : tx - 44}" y="${y + 44}" width="44" height="1.5" fill="${C.red}"/>`,
-    T(tx, y + 90, p.en, { font: 'EB Garamond', italic: true, size: 27, w: 400, op: 0.72, anchor: a }),
+    T(tx, y - 4, p.beat, { serif: true, size: long ? 52 : 62, w: 500, ls: long ? 5 : 10, anchor: a }),
+    `<rect x="${ruleX}" y="${y + 33}" width="40" height="1.5" fill="${C.red}"/>`,
+    T(timeX, y + 41, p.time, { font: 'EB Garamond', size: 22, w: 400, ls: 2, op: 0.55, anchor: a }),
+    T(tx, y + 88, p.en, { font: 'EB Garamond', italic: true, size: 27, w: 400, op: 0.72, anchor: a }),
   ].join('');
 }
 
