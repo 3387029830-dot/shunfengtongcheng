@@ -86,7 +86,7 @@
 - **对称与饱满**：上排两只表盘铺满宽度，下方大表盘居中，左右对称且两侧不空。
 - **一次签名**：左上角品牌 logo（与官方广告位置一致）。
 
-备选：`output/board-stack.png`（纵向叠放）、`output/board-vertical.png`（之字形）、`output/board.png`（16:9 横版）。
+备选：`output/board-chrono.png`（计时码表：主表盘是结局，两只副表盘是前两拍）、`output/board-stack.png`（纵向叠放）、`output/board-vertical.png`（之字形）、`output/board.png`（16:9 横版）。
 
 ## 九、交付文件
 

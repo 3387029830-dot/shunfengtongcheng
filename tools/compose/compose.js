@@ -351,6 +351,44 @@ function pyramidSvg() {
     `<rect width="${W}" height="${H}" filter="url(#grain)" opacity=".22" style="mix-blend-mode:multiply"/></svg>`;
 }
 
+// ===== 竖版展板 D：计时码表——主表盘是结局，两只副表盘是前两拍（3:4）=====
+function chronoSvg() {
+  const s = [];
+  const M = { x: CX, y: 610, r: 380 }; // 主表盘（表面半径）
+  const SUB = [{ x: 236, y: 1128, r: 166 }, { x: 964, y: 1128, r: 166 }];
+  const sceneAt = (inner, x, y, r) => {
+    const k = r / R_FACE;
+    return `<g transform="translate(${x - CX * k} ${y - CY * k}) scale(${k})">${inner}</g>`;
+  };
+  // 主表盘：环形城市 + 结局画面
+  const p3 = posters[2];
+  s.push(sceneAt(city(true) + dial(p3.rd) + p3.body(), M.x, M.y, M.r));
+  // 副表盘：金属感表圈 + 前两拍画面
+  SUB.forEach((d, i) => {
+    const p = posters[i];
+    s.push(`<circle cx="${d.x}" cy="${d.y}" r="${d.r + 22}" fill="${C.bg}" filter="url(#glow)"/>`);
+    s.push(`<circle cx="${d.x}" cy="${d.y}" r="${d.r + 14}" fill="none" stroke="#3B3632" stroke-width="10"/>`);
+    s.push(`<circle cx="${d.x}" cy="${d.y}" r="${d.r + 19}" fill="none" stroke="${C.cream}" stroke-width="1" opacity=".25"/>`);
+    s.push(sceneAt(dial(p.rd) + p.body(), d.x, d.y, d.r));
+  });
+  // 文字：副表盘下的小标题 + 时间注脚
+  SUB.forEach((d, i) => {
+    const p = posters[i], y = d.y + d.r + 74;
+    s.push(T(d.x + 6, y, p.line, { serif: true, size: 34, w: 500, ls: 12, anchor: 'middle' }));
+    s.push(T(d.x, y + 32, `${p.time}`, { font: 'EB Garamond', size: 17, w: 400, op: 0.55, ls: 3, anchor: 'middle' }));
+  });
+  // 主表盘时间：顶部居中
+  s.push(T(CX, 98, p3.time, { font: 'EB Garamond', size: 22, w: 400, op: 0.6, ls: 4, anchor: 'middle' }));
+  // 主标语：全板唯一的大字
+  s.push(T(CX + 9, 1494, '同城，即同时', { serif: true, size: 66, w: 600, ls: 18, anchor: 'middle' }));
+  s.push(`<rect x="${CX - 20}" y="1520" width="40" height="1.5" fill="${C.red}"/>`);
+  s.push(T(CX, 1560, 'A craving begins — and arrives in a moment. Same city, same moment.', { font: 'EB Garamond', italic: true, size: 21, w: 400, op: 0.68, anchor: 'middle' }));
+  s.push(logo(80, 56, 30, true) + T(80 + 30 * LOGO_R + 10, 80, '顺丰同城', { size: 24, w: 700, ls: 5 }));
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${defs()}` +
+    `<rect width="${W}" height="${H}" fill="${C.bg}"/>${s.join('')}` +
+    `<rect width="${W}" height="${H}" filter="url(#grain)" opacity=".22" style="mix-blend-mode:multiply"/></svg>`;
+}
+
 function svg(p) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${defs()}` +
     `<rect width="${W}" height="${H}" fill="${C.bg}"/>${stage(city(p.arrived) + dial(p.rd) + p.body())}${frame(p)}` +
@@ -390,5 +428,8 @@ function svg(p) {
   await page.setContent(`<html><body style="margin:0">${pyramidSvg()}</body></html>`);
   await page.waitForTimeout(400);
   await page.screenshot({ path: path.join(OUT, 'board-pyramid.png') });
+  await page.setContent(`<html><body style="margin:0">${chronoSvg()}</body></html>`);
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: path.join(OUT, 'board-chrono.png') });
   await browser.close();
 })();
